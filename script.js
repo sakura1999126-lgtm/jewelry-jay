@@ -41,9 +41,31 @@ let currentSelectedSize = null;
 
 // ページロード時の初期化
 document.addEventListener('DOMContentLoaded', () => {
+    // iOS 最優先: 動画は fetch 待ちにせず、DOM 直後に初期化して load/play を開始
+    initBackgroundVideo();
+
     setTimeout(() => {
         initializeApp();
     }, 200);
+
+    (function setupIosVideoPlayOnInteraction() {
+        var isIOS =
+            /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        if (!isIOS) return;
+
+        var vid = document.getElementById('bgVideo');
+        if (!vid) return;
+
+        function tryPlayOnce() {
+            if (!vid.paused) return;
+            vid.play().catch(function () {});
+        }
+
+        document.addEventListener('touchstart', tryPlayOnce, { once: true });
+        window.addEventListener('scroll', tryPlayOnce, { once: true });
+        document.addEventListener('click', tryPlayOnce, { once: true });
+    })();
 });
 
 // アプリケーションの初期化
@@ -71,36 +93,43 @@ async function initializeApp() {
 function showSplashScreen() {
     // sessionStorageでセッション中にすでに表示したかチェック
     if (sessionStorage.getItem('splashShown')) {
-        // すでに表示済みの場合はスプラッシュスクリーンを非表示にして終了
         const splashScreen = document.getElementById('splashScreen');
         if (splashScreen) {
             splashScreen.style.display = 'none';
         }
-        // メインコンテンツを即座に表示
         document.body.classList.add('splash-complete');
+        // iOS: splash-complete のタイミングで play を試行（ユーザー操作に近いタイミングのことが多い）
+        document.getElementById('bgVideo')?.play().catch(function () {});
         return;
     }
-    
-    // 初回セッションの場合のみ表示
+
     const splashScreen = document.getElementById('splashScreen');
     if (!splashScreen) {
-        // スプラッシュスクリーンが存在しない場合もメインコンテンツを表示
         document.body.classList.add('splash-complete');
+        document.getElementById('bgVideo')?.play().catch(function () {});
         return;
     }
-    
-    // セッションストレージに表示済みフラグを設定
+
     sessionStorage.setItem('splashShown', 'true');
-    
+
+    // iOS: スプラッシュのタップを「ユーザー操作」として play に利用（確実に再生できるよう最優先）
+    const onSplashTap = function () {
+        splashScreen.removeEventListener('touchstart', onSplashTap);
+        splashScreen.removeEventListener('click', onSplashTap);
+        document.getElementById('bgVideo')?.play().catch(function () {});
+    };
+    splashScreen.addEventListener('touchstart', onSplashTap, { once: true, passive: true });
+    splashScreen.addEventListener('click', onSplashTap, { once: true });
+
     // 3秒後にフェードアウト
     setTimeout(() => {
         splashScreen.classList.add('hide');
-        // フェードアウトアニメーション後に要素を削除し、メインコンテンツを表示
         setTimeout(() => {
             splashScreen.style.display = 'none';
             document.body.classList.add('splash-complete');
-        }, 500); // アニメーション時間と同じ
-    }, 3000); // 3秒表示
+            document.getElementById('bgVideo')?.play().catch(function () {});
+        }, 500);
+    }, 3000);
 }
 
 // 商品データを取得
@@ -486,6 +515,84 @@ function enableElementSelection() {
     // console.log('要素編集モードが有効になりました (Ctrl+Shift+E で無効化)');
 }
 
+/**
+ * iOS 確実再生のため全面再構築。
+ * - DOMContentLoaded で最初に実行し、fetch 待ちなしで load 開始
+ * - video にインラインスタイルは一切付けない（CSS のみ）。error 時のみ display:none
+ * - 複数タイミングで play(): loadeddata/canplay/canplaythrough、setTimeout 100/300/800/2000
+ * - スプラッシュのタップ・splash-complete・setupIosVideoPlayOnInteraction とも連携
+ * - iOS で 2.5 秒後も paused なら「タップして再生」オーバーレイを表示
+ */
+function initBackgroundVideo() {
+    var video = document.getElementById('bgVideo');
+    var container = document.getElementById('videoBackground');
+    if (!video || !container) return;
+
+    video.muted = true;
+    video.volume = 0;
+    video.playsInline = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    video.setAttribute('x5-playsinline', '');
+    video.setAttribute('preload', 'auto');
+    if (typeof video.disableRemotePlayback !== 'undefined') video.disableRemotePlayback = true;
+    if (typeof video.disablePictureInPicture !== 'undefined') video.disablePictureInPicture = true;
+
+    var fallbackTimeoutId;
+
+    function clearFallback() {
+        if (fallbackTimeoutId) { clearTimeout(fallbackTimeoutId); fallbackTimeoutId = null; }
+    }
+
+    function tryPlay() {
+        video.play().catch(function () {});
+    }
+
+    video.addEventListener('loadeddata', tryPlay);
+    video.addEventListener('canplay', tryPlay);
+    video.addEventListener('canplaythrough', tryPlay);
+    video.addEventListener('play', clearFallback);
+    video.addEventListener('error', function onErr() {
+        video.removeEventListener('error', onErr);
+        container.classList.add('video-fallback-active');
+        video.style.display = 'none';
+    }, { once: true });
+
+    video.load();
+
+    fallbackTimeoutId = setTimeout(function () {
+        if (container.classList.contains('video-fallback-active')) return;
+        if (video.readyState >= 2) return;
+        container.classList.add('video-fallback-active');
+        video.style.display = 'none';
+    }, 12000);
+
+    [100, 300, 800, 2000].forEach(function (ms) {
+        setTimeout(tryPlay, ms);
+    });
+
+    // iOS のみ: 2.5 秒後も止まっていれば「タップして再生」を表示（最終手段）
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        setTimeout(function () {
+            if (container.classList.contains('video-fallback-active')) return;
+            if (!video.paused) return;
+            var ov = document.createElement('div');
+            ov.id = 'ios-tap-to-play';
+            ov.setAttribute('aria-label', 'タップして再生');
+            ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;font-family:inherit;';
+            ov.textContent = 'タップして再生';
+            document.body.appendChild(ov);
+            function done() {
+                ov.remove();
+                tryPlay();
+            }
+            ov.addEventListener('touchstart', done, { once: true });
+            ov.addEventListener('click', done, { once: true });
+        }, 2500);
+    }
+}
+
 // アニメーション開始
 function startAnimations() {
     // ロゴのアニメーション
@@ -513,294 +620,6 @@ function startAnimations() {
         }
     }
     
-    // 背景動画の設定
-    const bgVideo = document.getElementById('bgVideo');
-    const videoBackground = document.getElementById('videoBackground');
-    
-    console.log('🎬 動画背景の初期化を開始');
-    console.log('bgVideo要素:', bgVideo ? '存在' : '不存在');
-    console.log('videoBackground要素:', videoBackground ? '存在' : '不存在');
-    
-    if (bgVideo && videoBackground) {
-        // 動画ファイルのパス（優先順位順）
-        const videoPaths = [
-            '/public/videos/video-output-89612E44-DF59-414E-B8F0-781525F2B34D.mp4',
-            '/public/videos/background-video.mp4',
-            '/videos/background-video.mp4'
-        ];
-        
-        // 動画ファイルの存在確認と読み込み
-        async function checkAndLoadVideo(index) {
-            if (index >= videoPaths.length) {
-                console.error('❌ すべての動画パスを試しましたが、見つかりませんでした');
-                console.error('試したパス:', videoPaths);
-                console.error('動画ファイルがRenderにデプロイされているか確認してください');
-                return;
-            }
-            
-            const videoPath = videoPaths[index];
-            const fullUrl = window.location.origin + videoPath;
-            
-            console.log(`🔍 動画ファイルを確認中 (${index + 1}/${videoPaths.length}): ${videoPath}`);
-            console.log(`   完全なURL: ${fullUrl}`);
-            
-            try {
-                // 動画ファイルの存在確認
-                const response = await fetch(videoPath, { method: 'HEAD' });
-                
-                if (response.ok) {
-                    console.log(`✅ 動画ファイルが見つかりました: ${videoPath}`);
-                    console.log(`   ステータス: ${response.status}`);
-                    console.log(`   コンテンツタイプ: ${response.headers.get('content-type')}`);
-                    console.log(`   ファイルサイズ: ${response.headers.get('content-length')} bytes`);
-                    
-                    // 動画を設定
-                    setupVideoElement(videoPath);
-                } else {
-                    console.warn(`⚠️ 動画ファイルが見つかりません (ステータス: ${response.status}): ${videoPath}`);
-                    // 次のパスを試す
-                    checkAndLoadVideo(index + 1);
-                }
-            } catch (error) {
-                console.error(`❌ 動画ファイルの確認中にエラーが発生: ${videoPath}`);
-                console.error('   エラー詳細:', error);
-                console.error('   エラーメッセージ:', error.message);
-                console.error('   エラースタック:', error.stack);
-                // 次のパスを試す
-                checkAndLoadVideo(index + 1);
-            }
-        }
-        
-        // 動画要素を設定する関数
-        function setupVideoElement(videoPath) {
-            console.log(`🎥 動画要素を設定中: ${videoPath}`);
-            
-            // モバイル判定（関数内で一度だけ宣言）
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-            
-            const ext = videoPath.split('.').pop().toLowerCase();
-            
-            // .movファイルはブラウザで直接再生できないため、背景画像として使用
-            if (ext === 'mov' || ext === 'jpeg' || ext === 'jpg' || ext === 'png') {
-                console.log(`📷 画像として使用: ${videoPath}`);
-                videoBackground.style.backgroundImage = `url(${videoPath})`;
-                videoBackground.style.backgroundSize = 'cover';
-                videoBackground.style.backgroundPosition = 'center';
-                bgVideo.style.display = 'none';
-                return;
-            }
-            
-            // .mp4などの動画ファイルの場合
-            console.log(`🎬 MP4動画として設定: ${videoPath}`);
-            
-            // モバイル対応: 音量を完全に無効化（音声なし）
-            bgVideo.muted = true;
-            bgVideo.volume = 0;
-            bgVideo.setAttribute('muted', 'true');
-            bgVideo.setAttribute('playsinline', 'true');
-            bgVideo.setAttribute('webkit-playsinline', 'true');
-            bgVideo.setAttribute('x5-playsinline', 'true');
-            console.log('   音量設定: muted=true, volume=0');
-            console.log('   モバイル対応: playsinline=true');
-            
-            // 既存のsource要素をクリア
-            bgVideo.innerHTML = '';
-            
-            const source = document.createElement('source');
-            source.src = videoPath;
-            source.type = `video/${ext}`;
-            bgVideo.appendChild(source);
-            console.log(`   <source>要素を追加: src="${videoPath}", type="video/${ext}"`);
-            
-            // モバイル対応: 動画のpreloadを確実に設定
-            bgVideo.setAttribute('preload', 'auto');
-            bgVideo.setAttribute('poster', ''); // ポスター画像なし
-            console.log('   動画のpreload属性を設定: auto');
-            
-            // 動画要素を確実に表示（モバイル対応）
-            bgVideo.style.display = 'block';
-            bgVideo.style.width = '100%';
-            bgVideo.style.height = '100%';
-            bgVideo.style.objectFit = 'cover';
-            bgVideo.style.position = 'absolute';
-            bgVideo.style.top = '0';
-            bgVideo.style.left = '0';
-            bgVideo.style.opacity = '1';
-            bgVideo.style.visibility = 'visible';
-            bgVideo.style.zIndex = '0';
-            bgVideo.style.background = '#000';
-            videoBackground.style.display = 'block';
-            videoBackground.style.visibility = 'visible';
-            
-            // モバイル判定とサイズ調整
-            if (isMobile) {
-                console.log('📱 モバイルデバイスを検出しました');
-                console.log('   画面サイズ:', window.innerWidth, 'x', window.innerHeight);
-                bgVideo.style.width = '100vw';
-                bgVideo.style.height = '100vh';
-                bgVideo.style.minWidth = '100vw';
-                bgVideo.style.minHeight = '100vh';
-                videoBackground.style.width = '100vw';
-                videoBackground.style.height = '100vh';
-                videoBackground.style.minWidth = '100vw';
-                videoBackground.style.minHeight = '100vh';
-                
-                // モバイルでの動画読み込みを確実にする
-                console.log('📱 モバイル用の動画設定を適用しました');
-            }
-            
-            // イベントリスナーの設定
-            const onLoadedMetadata = () => {
-                console.log('✅ 動画のメタデータが読み込まれました');
-                console.log(`   動画の長さ: ${bgVideo.duration}秒`);
-                console.log(`   動画の幅: ${bgVideo.videoWidth}px`);
-                console.log(`   動画の高さ: ${bgVideo.videoHeight}px`);
-            };
-            
-            const onLoadedData = () => {
-                console.log('✅ 動画データが読み込まれました');
-                // モバイルでも確実に再生
-                const playPromise = bgVideo.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        console.log('▶️ 動画の再生を開始しました');
-                    }).catch(err => {
-                        console.warn('⚠️ 自動再生に失敗:', err.message);
-                        // ユーザーインタラクション後に再生を試みる
-                        const tryPlayOnInteraction = () => {
-                            bgVideo.play().then(() => {
-                                console.log('▶️ ユーザーインタラクション後に再生を開始しました');
-                                document.removeEventListener('touchstart', tryPlayOnInteraction);
-                                document.removeEventListener('click', tryPlayOnInteraction);
-                            }).catch(() => {});
-                        };
-                        document.addEventListener('touchstart', tryPlayOnInteraction, { once: true });
-                        document.addEventListener('click', tryPlayOnInteraction, { once: true });
-                    });
-                }
-            };
-            
-            const onCanPlay = () => {
-                console.log('✅ 動画の再生準備が整いました');
-                // モバイルでも確実に再生を試みる
-                bgVideo.play().catch(() => {
-                    console.log('   再生準備完了、再生を試みます...');
-                });
-            };
-            
-            const onPlay = () => {
-                console.log('▶️ 動画が再生中です');
-            };
-            
-            const onError = (e) => {
-                console.error('❌ 動画の読み込みエラーが発生しました');
-                console.error('   エラーコード:', bgVideo.error ? bgVideo.error.code : 'unknown');
-                console.error('   エラーメッセージ:', bgVideo.error ? bgVideo.error.message : 'unknown');
-                console.error('   イベント:', e);
-                console.error('   動画パス:', videoPath);
-            };
-            
-            // イベントリスナーを追加
-            bgVideo.addEventListener('loadedmetadata', onLoadedMetadata, { once: true });
-            bgVideo.addEventListener('loadeddata', onLoadedData, { once: true });
-            bgVideo.addEventListener('canplay', onCanPlay, { once: true });
-            bgVideo.addEventListener('play', onPlay, { once: true });
-            bgVideo.addEventListener('error', onError, { once: true });
-            
-            // 動画の読み込みを開始（モバイル対応）
-            console.log('📥 動画の読み込みを開始...');
-            
-            // モバイルでの読み込みを確実にする
-            if (isMobile) {
-                console.log('📱 モバイルデバイス: 動画読み込みを強化します');
-                // 動画要素を強制的に表示
-                bgVideo.style.cssText = `
-                    display: block !important;
-                    width: 100vw !important;
-                    height: 100vh !important;
-                    min-width: 100vw !important;
-                    min-height: 100vh !important;
-                    object-fit: cover !important;
-                    position: absolute !important;
-                    top: 0 !important;
-                    left: 0 !important;
-                    opacity: 1 !important;
-                    visibility: visible !important;
-                    z-index: 0 !important;
-                    background: #000 !important;
-                `;
-                videoBackground.style.cssText = `
-                    display: block !important;
-                    position: fixed !important;
-                    top: 0 !important;
-                    left: 0 !important;
-                    width: 100vw !important;
-                    height: 100vh !important;
-                    min-width: 100vw !important;
-                    min-height: 100vh !important;
-                    z-index: -1 !important;
-                    overflow: hidden !important;
-                    background: #000 !important;
-                    visibility: visible !important;
-                `;
-            }
-            
-            bgVideo.load();
-            
-            // モバイル対応: 複数のタイミングで再生を試みる
-            const attemptPlay = () => {
-                bgVideo.play().then(() => {
-                    console.log('▶️ 動画の再生を開始しました');
-                }).catch(err => {
-                    console.warn('⚠️ 再生に失敗:', err.message);
-                    console.log('   次の機会に再試行します...');
-                });
-            };
-            
-            // 即座に再生を試みる
-            setTimeout(attemptPlay, 100);
-            
-            // loadeddataイベントでも再生を試みる
-            bgVideo.addEventListener('loadeddata', attemptPlay, { once: true });
-            
-            // canplayイベントでも再生を試みる
-            bgVideo.addEventListener('canplay', attemptPlay, { once: true });
-            
-            // モバイル対応: ユーザーインタラクション（タッチ、スクロール）で再生を試みる
-            const playOnInteraction = () => {
-                attemptPlay();
-                // 一度再生できたらイベントリスナーを削除
-                bgVideo.addEventListener('play', () => {
-                    document.removeEventListener('touchstart', playOnInteraction);
-                    document.removeEventListener('touchend', playOnInteraction);
-                    document.removeEventListener('scroll', playOnInteraction);
-                    window.removeEventListener('scroll', playOnInteraction);
-                }, { once: true });
-            };
-            
-            // タッチイベントで再生を試みる
-            document.addEventListener('touchstart', playOnInteraction, { once: true, passive: true });
-            document.addEventListener('touchend', playOnInteraction, { once: true, passive: true });
-            
-            // スクロールイベントで再生を試みる（モバイルでよく使われる）
-            let scrollAttempted = false;
-            const playOnScroll = () => {
-                if (!scrollAttempted) {
-                    scrollAttempted = true;
-                    attemptPlay();
-                }
-            };
-            window.addEventListener('scroll', playOnScroll, { once: true, passive: true });
-            document.addEventListener('scroll', playOnScroll, { once: true, passive: true });
-        }
-        
-        // 最初の動画パスから確認を開始
-        checkAndLoadVideo(0);
-    } else {
-        console.error('❌ 動画要素が見つかりません');
-        console.error('   bgVideo:', bgVideo);
-        console.error('   videoBackground:', videoBackground);
-    }
 }
 
 // スクロールアニメーションの設定

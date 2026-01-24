@@ -11,17 +11,21 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- iOS対応: body最優先。video は src 直接・width/height 明示・playsinline 必須。装飾扱いさせない。 -->
+    <div class="video-background" id="videoBackground">
+        <video id="bgVideo"
+               src="/public/videos/video-output-89612E44-DF59-414E-B8F0-781525F2B34D.mp4"
+               width="1920" height="1080"
+               autoplay loop muted playsinline webkit-playsinline x5-playsinline
+               preload="auto"
+               disableRemotePlayback disablePictureInPicture>
+        </video>
+        <div class="video-overlay" aria-hidden="true"></div>
+    </div>
+
     <!-- スプラッシュスクリーン -->
     <div class="splash-screen" id="splashScreen">
         <img src="/images/wtj%20logo.png" alt="WEST TOKYO JEWELS" class="splash-logo">
-    </div>
-
-    <!-- Background Video -->
-    <div class="video-background" id="videoBackground">
-        <video id="bgVideo" autoplay loop muted playsinline webkit-playsinline x5-playsinline preload="auto">
-            <!-- Video source will be added dynamically by JavaScript if file exists -->
-        </video>
-        <div class="video-overlay"></div>
     </div>
 
     <!-- Header -->
