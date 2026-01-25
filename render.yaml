@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: jewelry-ec
+    name: jewelry-jay
     env: node
     buildCommand: ""
     startCommand: node server.js

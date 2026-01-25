@@ -1,5 +1,5 @@
 {
-  "name": "jewelry-ec",
+  "name": "jewelry-jay",
   "version": "1.0.0",
   "description": "ジュエリーECサイト - Stripe決済対応準備済み",
   "main": "server.js",

@@ -11,11 +11,18 @@ HipHopBlingを参考にした、背景動画付きのジュエリーECサイト�
 - 決済ページ（Stripe統合用プレースホルダー）
 - レスポンシブデザイン
 
-## セットアップ
+## GitHub と Render への接続
+
+このプロジェクト（jewelry-jay）を GitHub と Render に繋げる手順：
+
+1. **GITHUB_SETUP.md** … リポジトリ `jewelry-jay` の作成と `git remote` の切り替え
+2. **RENDER_DEPLOY.md** … Render での Web サービス作成とデプロイ
+
+## セットアップ（ローカル）
 
 1. プロジェクトディレクトリに移動
 ```bash
-cd jewelry-ec
+cd jewelry-jay
 ```
 
 2. サーバーを起動

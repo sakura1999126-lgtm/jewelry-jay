@@ -1,7 +1,6 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const url = require('url');
 
 const PORT = process.env.PORT || 3006;
 
@@ -36,6 +35,72 @@ const mimeTypes = {
   '.otf': 'application/font-otf',
   '.wasm': 'application/wasm'
 };
+
+/**
+ * 動画ファイルを Range リクエスト対応で配信する。
+ * iOS Safari は Range(206) に対応していないと動画を再生しないため、.mp4/.webm はここで配信する。
+ */
+function serveVideoWithRange(filePath, req, res) {
+  const ext = path.extname(filePath).toLowerCase();
+  const contentType = mimeTypes[ext] || 'video/mp4';
+
+  fs.stat(filePath, (statErr, stat) => {
+    if (statErr || !stat.isFile()) {
+      res.writeHead(404, { 'Content-Type': 'text/html' });
+      res.end('<h1>404 - File Not Found</h1>', 'utf-8');
+      return;
+    }
+
+    const size = stat.size;
+    const isHead = (req.method || 'GET').toUpperCase() === 'HEAD';
+    const range = req.headers.range;
+
+    if (isHead) {
+      res.writeHead(200, {
+        'Content-Type': contentType,
+        'Content-Length': size,
+        'Accept-Ranges': 'bytes'
+      });
+      res.end();
+      return;
+    }
+
+    if (range) {
+      const match = range.match(/bytes=(\d*)-(\d*)/);
+      let start = 0;
+      let end = size - 1;
+
+      if (match) {
+        if (match[1] !== '') start = parseInt(match[1], 10);
+        if (match[2] !== '') end = parseInt(match[2], 10);
+        if (match[1] === '' && match[2] !== '') {
+          start = Math.max(0, size - parseInt(match[2], 10));
+          end = size - 1;
+        }
+        start = Math.min(start, size - 1);
+        end = Math.min(end, size - 1);
+      }
+
+      const chunkSize = end - start + 1;
+      const stream = fs.createReadStream(filePath, { start, end });
+
+      res.writeHead(206, {
+        'Content-Type': contentType,
+        'Content-Range': `bytes ${start}-${end}/${size}`,
+        'Accept-Ranges': 'bytes',
+        'Content-Length': chunkSize
+      });
+      stream.pipe(res);
+    } else {
+      res.writeHead(200, {
+        'Content-Type': contentType,
+        'Content-Length': size,
+        'Accept-Ranges': 'bytes'
+      });
+      fs.createReadStream(filePath).pipe(res);
+    }
+  });
+}
 
 // 静的ファイルを配信する関数
 function serveStaticFile(filePath, res) {
@@ -203,9 +268,8 @@ function createCheckoutSession(req, res) {
 
 // サーバー作成
 const server = http.createServer((req, res) => {
-  const parsedUrl = url.parse(req.url, true);
-  // URLエンコードされた文字（%20など）をデコード
-  let pathname = decodeURIComponent(parsedUrl.pathname);
+  const u = new URL(req.url || '/', 'http://localhost');
+  let pathname = decodeURIComponent(u.pathname);
   const method = req.method;
 
   // APIエンドポイントの処理
@@ -250,6 +314,11 @@ const server = http.createServer((req, res) => {
     filePath = path.join(__dirname, relativePath);
   }
 
+  const ext = path.extname(filePath).toLowerCase();
+  if (['.mp4', '.webm'].includes(ext)) {
+    serveVideoWithRange(filePath, req, res);
+    return;
+  }
   serveStaticFile(filePath, res);
 });
 
