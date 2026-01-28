@@ -522,21 +522,21 @@ body.splash-complete .main-content {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    opacity: 0.7;
-    animation: fadeInUp 1.2s ease-out 0.3s forwards;
+    opacity: 0;
+    animation: heroFadeIn 2.5s ease-out 0.5s forwards;
 }
 
 .hero-description {
     font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
     font-size: 1.1rem;
     font-weight: 300;
-    opacity: 0.7;
+    opacity: 0;
     color: rgba(255, 255, 255, 0.7);
     text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.7);
     letter-spacing: 4px;
     line-height: 1.8;
     margin-top: 2rem;
-    animation: fadeInUp 1.2s ease-out 0.6s forwards;
+    animation: heroFadeIn 2.5s ease-out 1.5s forwards;
 }
 
 @keyframes fadeInUp {
@@ -550,17 +550,27 @@ body.splash-complete .main-content {
     }
 }
 
+/* ヒーローセクション用のゆっくりシンプルなアニメーション */
+@keyframes heroFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0.85;
+    }
+}
+
 .hero-subtitle {
     font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
     font-size: 1.3rem;
     font-weight: 300;
-    opacity: 0.7;
+    opacity: 0;
     text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.7);
     letter-spacing: 5px;
     text-transform: none;
     color: rgba(255, 255, 255, 0.7);
     margin-bottom: 1rem;
-    animation: fadeInUp 1.2s ease-out 0.45s forwards;
+    animation: heroFadeIn 2.5s ease-out 1s forwards;
 }
 
 .hero-divider {
@@ -593,6 +603,7 @@ body.splash-complete .main-content {
 .products-section {
     margin-top: 0;
     padding: 4rem 2rem;
+    padding-top: 8rem;
     background: #000000;
     position: relative;
     z-index: 2;
@@ -600,6 +611,19 @@ body.splash-complete .main-content {
     transform: translateY(20px);
     transition: opacity 0.6s ease-in, transform 0.6s ease-in;
     will-change: opacity, transform;
+}
+
+/* 動画と商品セクションの境界をフェードでなめらかに */
+.products-section::before {
+    content: '';
+    position: absolute;
+    top: -150px;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 30%, rgba(0, 0, 0, 0.7) 60%, #000000 100%);
+    pointer-events: none;
+    z-index: 1;
 }
 
 .products-container {
@@ -636,7 +660,7 @@ body.splash-complete .main-content {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
+    border-radius: 0;
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border: 1px solid rgba(255, 215, 0, 0.15);
@@ -748,6 +772,7 @@ body.splash-complete .main-content {
     align-items: center;
     justify-content: center;
     position: relative;
+    border-radius: 0;
 }
 
 .product-image-placeholder::after {
@@ -1900,7 +1925,7 @@ body.splash-complete .main-content {
 
     /* 商品カード */
     .product-card {
-        border-radius: 12px;
+        border-radius: 0;
     }
 
     .product-image {
