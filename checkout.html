@@ -143,7 +143,7 @@
                         
                         const imageHtml = imageUrl && !imageUrl.includes('placeholder.com')
                             ? `<img src="${imageUrl}" alt="${item.name}" onerror="this.style.display='none';">`
-                            : '<div style="width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem;">📦</div>';
+                            : '<div style="width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 0; display: flex; align-items: center; justify-content: center; font-size: 2rem;">📦</div>';
                         
                         const soldOutBadge = isSoldOut ? '<span class="checkout-item-soldout-badge">売り切れ</span>' : '';
                         
@@ -189,7 +189,7 @@
                         itemElement.className = 'checkout-item';
                         itemElement.innerHTML = `
                             <div class="checkout-item-image">
-                                <div style="width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem;">📦</div>
+                                <div style="width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 0; display: flex; align-items: center; justify-content: center; font-size: 2rem;">📦</div>
                             </div>
                             <div class="checkout-item-details">
                                 <h3>${item.name}</h3>
