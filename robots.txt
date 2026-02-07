@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://west-tokyo-jewels.com/sitemap.xml
+
+# クローラーに不要なパスを除外
+Disallow: /api/
+Disallow: /checkout.html
+Disallow: /checkout-success.html

@@ -1,0 +1,191 @@
+{
+  "products": [
+    {
+      "id": "prod_earring_5mm",
+      "name": "モアサナイトピアス 5mm",
+      "category": "earrings",
+      "price": 7980,
+      "originalPrice": 13980,
+      "currency": "JPY",
+      "image": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%94%E3%82%A2%E3%82%B9%2F5mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%80%E3%83%94%E3%82%A2%E3%82%B9%E3%80%805mm%20.png",
+      "imageCaption": "5mm",
+      "images": [
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%94%E3%82%A2%E3%82%B9%2F5mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%80%E3%83%94%E3%82%A2%E3%82%B9%E3%80%805mm%20.png", "caption": "5mm" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%94%E3%82%A2%E3%82%B9%2F5mm%2F1%E6%9E%9A%E7%9B%AE%E3%80%805mm.jpg", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%94%E3%82%A2%E3%82%B9%2F5mm%2F2%E6%9E%9A%E7%9B%AE.jpg", "caption": "" }
+      ],
+      "description": "モアサナイトピアス 5mm。2セット（1ペア）。",
+      "detailedDescription": "\"本物以上の輝き\"と称される宝石、モアサナイト。\nその輝きはダイヤモンドの約2.5倍とも言われ、胸元にひと目でわかる存在感をもたらします。\n\nモアサナイトピアスは、シンプルながらもしっかりとした存在感があり、\nカジュアルな日常スタイルからフォーマルなシーンまで幅広く活躍。\n軽やかな着け心地で長時間でもストレスなく使え、\n1粒でも重ね付けでも美しくまとまります。\n\nWest Tokyo Jewelsのジュエリーは\n石のカット精度、セッティングの美しさ、金属仕上げまで徹底管理されており、業界トップクラスのクオリティを実現しています。\n高品質ながら、SNSを活用し広告費を削減することで他社より圧倒的な低価格でのご提供が可能になりました。\n\n【商品詳細】\n\n・セット内容：2セット（1ペア）\n\n・材質：シルバー925\n\n・カラーバリエーション：シルバー\n\n・宝石：モアサナイト\n\n・品質保証：GRA鑑定書付き\n\n・専用ボックス付き",
+      "sizes": [
+        { "name": "5mm", "price": 7980, "originalPrice": 13980, "stock": 24 }
+      ],
+      "stock": 24
+    },
+    {
+      "id": "prod_earring_6_5mm",
+      "name": "モアサナイトピアス 6,5mm",
+      "category": "earrings",
+      "price": 8980,
+      "originalPrice": 14980,
+      "currency": "JPY",
+      "image": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%94%E3%82%A2%E3%82%B9%2F6mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%80%E3%83%94%E3%82%A2%E3%82%B9%E3%80%806.5mm.png",
+      "imageCaption": "6.5mm",
+      "images": [
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%94%E3%82%A2%E3%82%B9%2F6mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%80%E3%83%94%E3%82%A2%E3%82%B9%E3%80%806.5mm.png", "caption": "6.5mm" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%94%E3%82%A2%E3%82%B9%2F6mm%2F1%E6%9E%9A%E7%9B%AE.JPG", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%94%E3%82%A2%E3%82%B9%2F6mm%2F2%E6%9E%9A%E7%9B%AE.JPG", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%94%E3%82%A2%E3%82%B9%2F6mm%2F3%E6%9E%9A%E7%9B%AE.jpg", "caption": "" }
+      ],
+      "description": "モアサナイトピアス 6,5mm。2セット（1ペア）。",
+      "detailedDescription": "\"本物以上の輝き\"と称される宝石、モアサナイト。\nその輝きはダイヤモンドの約2.5倍とも言われ、胸元にひと目でわかる存在感をもたらします。\n\nモアサナイトピアスは、シンプルながらもしっかりとした存在感があり、\nカジュアルな日常スタイルからフォーマルなシーンまで幅広く活躍。\n軽やかな着け心地で長時間でもストレスなく使え、\n1粒でも重ね付けでも美しくまとまります。\n\nWest Tokyo Jewelsのジュエリーは\n石のカット精度、セッティングの美しさ、金属仕上げまで徹底管理されており、業界トップクラスのクオリティを実現しています。\n高品質ながら、SNSを活用し広告費を削減することで他社より圧倒的な低価格でのご提供が可能になりました。\n\n【商品詳細】\n\n・セット内容：2セット（1ペア）\n\n・材質：シルバー925\n\n・カラーバリエーション：シルバー\n\n・宝石：モアサナイト\n\n・品質保証：GRA鑑定書付き\n\n・専用ボックス付き",
+      "sizes": [
+        { "name": "6.5mm", "price": 8980, "originalPrice": 14980, "stock": 27 }
+      ],
+      "stock": 27
+    },
+    {
+      "id": "prod_tennis_2mm",
+      "name": "テニスネックレス 2mm",
+      "category": "necklace",
+      "price": 43600,
+      "originalPrice": 49600,
+      "currency": "JPY",
+      "image": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F2mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%80%E3%83%86%E3%83%8B%E3%82%B92mm.png",
+      "imageCaption": "2mm · 16 / 18インチ",
+      "images": [
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F2mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%80%E3%83%86%E3%83%8B%E3%82%B92mm.png", "caption": "2mm" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F2mm%2F1%E6%9E%9A%E7%9B%AE.JPG", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F2mm%2F2%E6%9E%9A%E7%9B%AE.JPG", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F2mm%2F3%E6%9E%9A%E7%9B%AE.JPG", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F2mm%2F4%E6%9E%9A%E7%9B%AE.jpg", "caption": "" }
+      ],
+      "description": "テニスネックレス 2mm。16・18インチ。",
+      "detailedDescription": "\"本物以上の輝き\"と称される宝石、モアサナイト。\nその輝きはダイヤモンドの約2.5倍とも言われ、胸元にひと目でわかる存在感をもたらします。\n\nテニスネックレスは シンプルながらも確かな高級感を演出します。\n1本でも主役級の存在感がありつつ、重ね付けでもバランスよくまとまります。\n\nストリートスタイルから、大人な綺麗目コーデまで幅広いスタイルに似合います\n\nWest Tokyo Jewelsのジュエリーは\n石のカット精度、セッティングの美しさ、金属仕上げまで徹底管理されており、業界トップクラスのクオリティを実現しています。\n高品質ながら、SNSを活用し広告費を削減することで他社より圧倒的な低価格でのご提供が可能になりました。\n\n【商品詳細】\n\n・材質：シルバー925\n\n・カラーバリエーション：シルバー\n\n・宝石：モアサナイト\n\n・品質保証：GRA鑑定書付き\n\n・専用ボックス付き",
+      "sizes": [
+        { "name": "2mm · 16インチ", "price": 43600, "originalPrice": 49600, "stock": 10 },
+        { "name": "2mm · 18インチ", "price": 46600, "originalPrice": 52600, "stock": 7 },
+        { "name": "2mm · 20インチ", "price": 49800, "originalPrice": 55800, "stock": 5 }
+      ],
+      "stock": 22
+    },
+    {
+      "id": "prod_tennis_3mm",
+      "name": "テニスネックレス 3mm",
+      "category": "necklace",
+      "price": 49800,
+      "originalPrice": 55800,
+      "currency": "JPY",
+      "image": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F3mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%80%E3%83%86%E3%83%8B%E3%82%B93mm.png",
+      "imageCaption": "3mm · 16 / 18 / 20インチ",
+      "images": [
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F3mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%80%E3%83%86%E3%83%8B%E3%82%B93mm.png", "caption": "3mm" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F3mm%2F1%E6%9E%9A%E7%9B%AE.JPG", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F3mm%2F2%E6%9E%9A%E7%9B%AE.JPG", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F3mm%2F%EF%BC%93%E6%9E%9A%E7%9B%AE.png", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F3mm%2F4%E6%9E%9A%E7%9B%AE.jpg", "caption": "" }
+      ],
+      "description": "テニスネックレス 3mm。16・18・20インチ。",
+      "detailedDescription": "\"本物以上の輝き\"と称される宝石、モアサナイト。\nその輝きはダイヤモンドの約2.5倍とも言われ、胸元にひと目でわかる存在感をもたらします。\n\nテニスネックレスは シンプルながらも確かな高級感を演出します。\n1本でも主役級の存在感がありつつ、重ね付けでもバランスよくまとまります。\n\nストリートスタイルから、大人な綺麗目コーデまで幅広いスタイルに似合います\n\nWest Tokyo Jewelsのジュエリーは\n石のカット精度、セッティングの美しさ、金属仕上げまで徹底管理されており、業界トップクラスのクオリティを実現しています。\n高品質ながら、SNSを活用し広告費を削減することで他社より圧倒的な低価格でのご提供が可能になりました。\n\n【商品詳細】\n\n・材質：シルバー925\n\n・カラーバリエーション：シルバー\n\n・宝石：モアサナイト\n\n・品質保証：GRA鑑定書付き\n\n・専用ボックス付き",
+      "sizes": [
+        { "name": "3mm · 16インチ", "price": 49800, "originalPrice": 55800, "stock": 10 },
+        { "name": "3mm · 18インチ", "price": 53980, "originalPrice": 59980, "stock": 7 },
+        { "name": "3mm · 20インチ", "price": 57980, "originalPrice": 63980, "stock": 4 }
+      ],
+      "stock": 21
+    },
+    {
+      "id": "prod_tennis_4mm",
+      "name": "テニスネックレス 4mm",
+      "category": "necklace",
+      "price": 78400,
+      "originalPrice": 84400,
+      "currency": "JPY",
+      "image": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F4mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%80%E3%83%86%E3%83%8B%E3%82%B94mm.png",
+      "imageCaption": "4mm · 18 / 20インチ",
+      "images": [
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F4mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%80%E3%83%86%E3%83%8B%E3%82%B94mm.png", "caption": "4mm" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F4mm%2F1%E6%9E%9A%E7%9B%AE.png", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F4mm%2F2%E6%9E%9A%E7%9B%AE.JPG", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F4mm%2F3%E6%9E%9A%E7%9B%AE.png", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%86%E3%83%8B%E3%82%B9%E3%83%8D%E3%83%83%E3%82%AF%E3%83%AC%E3%82%B9%2F4mm%2F4%E6%9E%9A%E7%9B%AE.jpg", "caption": "" }
+      ],
+      "description": "テニスネックレス 4mm。18・20インチ。",
+      "detailedDescription": "\"本物以上の輝き\"と称される宝石、モアサナイト。\nその輝きはダイヤモンドの約2.5倍とも言われ、胸元にひと目でわかる存在感をもたらします。\n\nテニスネックレスは シンプルながらも確かな高級感を演出します。\n1本でも主役級の存在感がありつつ、重ね付けでもバランスよくまとまります。\n\nストリートスタイルから、大人な綺麗目コーデまで幅広いスタイルに似合います\n\nWest Tokyo Jewelsのジュエリーは\n石のカット精度、セッティングの美しさ、金属仕上げまで徹底管理されており、業界トップクラスのクオリティを実現しています。\n高品質ながら、SNSを活用し広告費を削減することで他社より圧倒的な低価格でのご提供が可能になりました。\n\n【商品詳細】\n\n・材質：シルバー925\n\n・カラーバリエーション：シルバー\n\n・宝石：モアサナイト\n\n・品質保証：GRA鑑定書付き\n\n・専用ボックス付き",
+      "sizes": [
+        { "name": "4mm · 18インチ", "price": 78400, "originalPrice": 84400, "stock": 4 },
+        { "name": "4mm · 20インチ", "price": 83900, "originalPrice": 89900, "stock": 5 }
+      ],
+      "stock": 9
+    },
+    {
+      "id": "prod_bracelet_2mm_3mm",
+      "name": "テニスブレスレット 2mm",
+      "category": "bracelet",
+      "price": 19800,
+      "originalPrice": 25800,
+      "currency": "JPY",
+      "image": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%88%2F2mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%802mm%20.png",
+      "imageCaption": "2mm · 7 / 8 / 8.5インチ",
+      "images": [
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%88%2F2mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%802mm%20.png", "caption": "2mm" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%88%2F2mm%2F1%E6%9E%9A%E7%9B%AE%E3%80%802mm%203mm%E3%80%80%E7%9D%80%E7%94%A8.jpg", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%88%2F2mm%2F2%E6%9E%9A%E7%9B%AE%E3%80%80%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%884mm.JPG", "caption": "" }
+      ],
+      "description": "テニスブレスレット 2mm。7・8・8.5インチ。",
+      "detailedDescription": "\"本物以上の輝き\"と称される宝石、モアサナイト。\nその輝きはダイヤモンドの約2.5倍とも言われ、胸元にひと目でわかる存在感をもたらします。\n\nテニスブレスレットは、手元の動きに合わせて繊細に輝き、\nシンプルなコーディネートでも確かな高級感を演出します。\n1本でも美しく、時計やリングとの重ね付けにも相性抜群です。\n\n日常使いから特別なシーンまで幅広く活躍し、\n自分へのご褒美にも、大切な方へのギフトにもおすすめです。\n\nWest Tokyo Jewelsのジュエリーは\n石のカット精度、セッティングの美しさ、金属仕上げまで徹底管理されており、業界トップクラスのクオリティを実現しています。\n高品質ながら、SNSを活用し広告費を削減することで他社より圧倒的な低価格でのご提供が可能になりました。\n\n【商品詳細】\n\n・材質：シルバー925\n\n・カラーバリエーション：シルバー\n\n・宝石：モアサナイト\n\n・品質保証：GRA鑑定書付き\n\n・専用ボックス付き",
+      "sizes": [
+        { "name": "2mm · 7インチ", "price": 19800, "originalPrice": 25800, "stock": 5 },
+        { "name": "2mm · 8インチ", "price": 22800, "originalPrice": 28800, "stock": 10 },
+        { "name": "2mm · 8.5インチ", "price": 22800, "originalPrice": 28800, "stock": 8 }
+      ],
+      "stock": 23
+    },
+    {
+      "id": "prod_bracelet_3mm_4mm",
+      "name": "テニスブレスレット 3mm",
+      "category": "bracelet",
+      "price": 21980,
+      "originalPrice": 27980,
+      "currency": "JPY",
+      "image": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%88%2F3mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%803mm%20.png",
+      "imageCaption": "3mm · 6.5 / 7インチ",
+      "images": [
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%88%2F3mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%803mm%20.png", "caption": "3mm" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%88%2F3mm%2F1%E6%9E%9A%E7%9B%AE%E3%80%803mm%204mm%E3%80%80%E7%9D%80%E7%94%A8.JPG", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%88%2F3mm%2F2%E6%9E%9A%E7%9B%AE%E3%80%802mm%203mm%E7%9D%80%E7%94%A8.jpg", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%88%2F3mm%2F3%E6%9E%9A%E7%9B%AE%E3%80%803mm%204mm%E7%9D%80%E7%94%A8.JPG", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%88%2F3mm%2F4%E6%9E%9A%E7%9B%AE%E3%80%80%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%884mm.JPG", "caption": "" }
+      ],
+      "description": "テニスブレスレット 3mm。6.5・7インチ。",
+      "detailedDescription": "\"本物以上の輝き\"と称される宝石、モアサナイト。\nその輝きはダイヤモンドの約2.5倍とも言われ、胸元にひと目でわかる存在感をもたらします。\n\nテニスブレスレットは、手元の動きに合わせて繊細に輝き、\nシンプルなコーディネートでも確かな高級感を演出します。\n1本でも美しく、時計やリングとの重ね付けにも相性抜群です。\n\n日常使いから特別なシーンまで幅広く活躍し、\n自分へのご褒美にも、大切な方へのギフトにもおすすめです。\n\nWest Tokyo Jewelsのジュエリーは\n石のカット精度、セッティングの美しさ、金属仕上げまで徹底管理されており、業界トップクラスのクオリティを実現しています。\n高品質ながら、SNSを活用し広告費を削減することで他社より圧倒的な低価格でのご提供が可能になりました。\n\n【商品詳細】\n\n・材質：シルバー925\n\n・カラーバリエーション：シルバー\n\n・宝石：モアサナイト\n\n・品質保証：GRA鑑定書付き\n\n・専用ボックス付き",
+      "sizes": [
+        { "name": "3mm · 6.5インチ", "price": 21980, "originalPrice": 27980, "stock": 10 },
+        { "name": "3mm · 7インチ", "price": 23980, "originalPrice": 29980, "stock": 10 }
+      ],
+      "stock": 20
+    },
+    {
+      "id": "prod_bracelet_4mm",
+      "name": "テニスブレスレット 4mm",
+      "category": "bracelet",
+      "price": 29800,
+      "originalPrice": 35800,
+      "currency": "JPY",
+      "image": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%88%2F4mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%804mm%20.png",
+      "imageCaption": "4mm · 7 / 8インチ",
+      "images": [
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%88%2F4mm%2F%E3%83%88%E3%83%83%E3%83%97%E7%94%BB%E3%80%804mm%20.png", "caption": "4mm" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%88%2F4mm%2F1%E6%9E%9A%E7%9B%AE%E3%80%803mm%204mm%E3%80%80%E7%9D%80%E7%94%A8.JPG", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%88%2F4mm%2F2%E6%9E%9A%E7%9B%AE%E3%80%803mm%204mm%E7%9D%80%E7%94%A8.JPG", "caption": "" },
+        { "url": "https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/products/%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%88%2F4mm%2F3%E6%9E%9A%E7%9B%AE%E3%80%80%E3%83%96%E3%83%AC%E3%82%B9%E3%83%AC%E3%83%83%E3%83%884mm.JPG", "caption": "" }
+      ],
+      "description": "テニスブレスレット 4mm。7・8インチ。",
+      "detailedDescription": "\"本物以上の輝き\"と称される宝石、モアサナイト。\nその輝きはダイヤモンドの約2.5倍とも言われ、胸元にひと目でわかる存在感をもたらします。\n\nテニスブレスレットは、手元の動きに合わせて繊細に輝き、\nシンプルなコーディネートでも確かな高級感を演出します。\n1本でも美しく、時計やリングとの重ね付けにも相性抜群です。\n\n日常使いから特別なシーンまで幅広く活躍し、\n自分へのご褒美にも、大切な方へのギフトにもおすすめです。\n\nWest Tokyo Jewelsのジュエリーは\n石のカット精度、セッティングの美しさ、金属仕上げまで徹底管理されており、業界トップクラスのクオリティを実現しています。\n高品質ながら、SNSを活用し広告費を削減することで他社より圧倒的な低価格でのご提供が可能になりました。\n\n【商品詳細】\n\n・材質：シルバー925\n\n・カラーバリエーション：シルバー\n\n・宝石：モアサナイト\n\n・品質保証：GRA鑑定書付き\n\n・専用ボックス付き",
+      "sizes": [
+        { "name": "4mm · 7インチ", "price": 29800, "originalPrice": 35800, "stock": 6 },
+        { "name": "4mm · 8インチ", "price": 31980, "originalPrice": 37980, "stock": 8 }
+      ],
+      "stock": 14
+    }
+  ]
+}

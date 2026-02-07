@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注文完了 - West Tokyo Jewels</title>
+    <!-- Favicon設定 - 検索結果アイコン用 -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/images/IMG_7300.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/images/IMG_7300.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/images/IMG_7300.png">
+    <link rel="shortcut icon" href="https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/images/IMG_7300.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500&family=Shippori+Mincho:wght@400;500&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .success-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .success-content {
+            background: linear-gradient(135deg, rgba(28, 28, 28, 0.9) 0%, rgba(20, 20, 20, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        .success-title {
+            font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+            font-size: 2rem;
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+        .success-message {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+        .order-number {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 2rem 0;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            color: #ffd700;
+        }
+        .back-home-btn {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #000;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .back-home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-content">
+            <div class="success-icon">✅</div>
+            <h1 class="success-title">ご注文ありがとうございます</h1>
+            <p class="success-message">
+                ご注文を承りました。<br>
+                注文確認メールをお送りいたしますので、ご確認ください。
+            </p>
+            <div class="order-details" id="orderDetails" style="margin-top: 2rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.03); border-radius: 12px; text-align: left;">
+                <h3 style="font-family: 'Shippori Mincho', serif; color: #ffd700; margin-bottom: 1rem; font-size: 1.2rem; letter-spacing: 2px;">注文内容</h3>
+                <div id="orderInfo" style="color: rgba(255, 255, 255, 0.8); line-height: 1.8; font-size: 0.95rem;">
+                    読み込み中...
+                </div>
+            </div>
+            <a href="/" class="back-home-btn" style="margin-top: 2rem;">ホームに戻る</a>
+        </div>
+    </div>
+
+    <script>
+        // 注文完了時にカートをクリア
+        localStorage.removeItem('cart');
+        console.log('カートをクリアしました');
+        
+        // URLパラメータからsession_idを取得
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+        
+        if (sessionId) {
+            // Stripe Checkout Sessionから注文情報を取得
+            fetch(`/api/checkout-session?session_id=${sessionId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('注文情報の取得に失敗しました');
+                    }
+                    return response.json();
+                })
+                .then(session => {
+                    console.log('Stripe Checkout Session:', session);
+                    
+                    // 注文詳細を表示
+                    const orderInfo = document.getElementById('orderInfo');
+                    
+                    // 顧客情報
+                    const customerName = session.customer_details?.name || session.customer_details?.shipping?.name || '未入力';
+                    const customerEmail = session.customer_details?.email || session.customer_email || '未入力';
+                    const customerPhone = session.customer_details?.phone || '未入力';
+                    
+                    // 配送先住所
+                    const shipping = session.customer_details?.shipping;
+                    let shippingAddress = '未入力';
+                    if (shipping?.address) {
+                        const addr = shipping.address;
+                        shippingAddress = `
+                            〒${addr.postal_code || ''}<br>
+                            ${addr.state || ''}${addr.city || ''}${addr.line1 || ''}${addr.line2 || ''}
+                        `.trim();
+                    }
+                    
+                    // 注文商品情報
+                    const lineItems = session.line_items?.data || [];
+                    // Stripeの日本円は「円」単位で保存される（100で割る必要はない）
+                    const totalAmount = session.amount_total || 0;
+                    
+                    // metadataからcartItemsを取得（商品IDと画像を取得するため）
+                    let cartItems = [];
+                    if (session.metadata?.cartItems) {
+                        try {
+                            cartItems = JSON.parse(session.metadata.cartItems);
+                        } catch (e) {
+                            console.error('CartItemsのパースエラー:', e);
+                        }
+                    }
+                    
+                    // 商品情報を取得して画像を補完
+                    fetch('/api/products')
+                        .then(res => res.json())
+                        .then(products => {
+                            const productList = Array.isArray(products) ? products : (products.products || []);
+                            
+                            // 商品リストを作成
+                            let itemsHtml = '';
+                            if (lineItems.length > 0) {
+                                itemsHtml = lineItems.map((item, index) => {
+                                    const quantity = item.quantity || 1;
+                                    // Stripeの日本円は「円」単位で保存される
+                                    const price = item.price?.unit_amount || 0;
+                                    const productName = item.description || item.price?.product_data?.name || '商品';
+                                    
+                                    // cartItemsから商品IDを取得して、products.jsonから画像を取得
+                                    const cartItem = cartItems[index];
+                                    let productImage = null;
+                                    if (cartItem && cartItem.productId) {
+                                        const product = productList.find(p => p.id === cartItem.productId);
+                                        if (product) {
+                                            // 商品画像を取得（images配列の最初の画像、またはimageプロパティ）
+                                            productImage = product.images && product.images.length > 0 
+                                                ? (typeof product.images[0] === 'string' ? product.images[0] : product.images[0].url)
+                                                : product.image;
+                                        }
+                                    }
+                                    
+                                    // Stripeのproduct_data.imagesも試す（フォールバック）
+                                    if (!productImage && item.price?.product_data?.images?.[0]) {
+                                        productImage = item.price.product_data.images[0];
+                                    }
+                                    
+                                    return `
+                                        <div style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); display: flex; gap: 1rem; align-items: flex-start;">
+                                            ${productImage ? `
+                                                <img src="${productImage}" alt="${productName}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.2); flex-shrink: 0;">
+                                            ` : ''}
+                                            <div style="flex: 1; display: flex; justify-content: space-between; align-items: flex-start;">
+                                                <div style="flex: 1;">
+                                                    <div style="margin-bottom: 0.5rem;">
+                                                        <strong style="color: #ffd700; font-size: 1rem;">${productName}</strong>
+                                                    </div>
+                                                    <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.5); display: flex; gap: 1rem; flex-wrap: wrap;">
+                                                        <span>数量: <strong style="color: rgba(255, 255, 255, 0.7);">${quantity}点</strong></span>
+                                                        <span>単価: <strong style="color: rgba(255, 255, 255, 0.7);">¥${price.toLocaleString()}</strong></span>
+                                                    </div>
+                                                </div>
+                                                <div style="text-align: right; margin-left: 1rem;">
+                                                    <div style="font-size: 1.1rem; font-weight: 600; color: #ffd700;">
+                                                        ¥${(price * quantity).toLocaleString()}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('');
+                            }
+                            
+                            // 注文情報を表示
+                            orderInfo.innerHTML = `
+                                <div style="margin-bottom: 1rem;">
+                                    <strong style="color: #ffd700;">お名前:</strong> ${customerName}
+                                </div>
+                                <div style="margin-bottom: 1rem;">
+                                    <strong style="color: #ffd700;">メールアドレス:</strong> ${customerEmail}
+                                </div>
+                                <div style="margin-bottom: 1rem;">
+                                    <strong style="color: #ffd700;">配送先:</strong><br>
+                                    <span style="white-space: pre-line;">${shippingAddress}</span>
+                                </div>
+                                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                                    <h4 style="color: #ffd700; margin-bottom: 0.8rem; font-size: 1rem;">ご注文商品</h4>
+                                    ${itemsHtml || '<div style="color: rgba(255, 255, 255, 0.6);">商品情報を取得中...</div>'}
+                                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1); text-align: right;">
+                                        <div style="font-size: 1.1rem;">
+                                            <strong style="color: #ffd700;">合計金額:</strong> ¥${totalAmount.toLocaleString()}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        })
+                        .catch(error => {
+                            console.error('商品情報の取得エラー:', error);
+                            // 商品情報が取得できなくても、Stripeの情報で表示
+                            let itemsHtml = '';
+                            if (lineItems.length > 0) {
+                                itemsHtml = lineItems.map(item => {
+                                    const quantity = item.quantity || 1;
+                                    const price = item.price?.unit_amount || 0;
+                                    const productName = item.description || item.price?.product_data?.name || '商品';
+                                    const productImage = item.price?.product_data?.images?.[0] || null;
+                                    
+                                    return `
+                                        <div style="margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); display: flex; gap: 1rem; align-items: flex-start;">
+                                            ${productImage ? `
+                                                <img src="${productImage}" alt="${productName}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.2); flex-shrink: 0;">
+                                            ` : ''}
+                                            <div style="flex: 1; display: flex; justify-content: space-between; align-items: flex-start;">
+                                                <div style="flex: 1;">
+                                                    <div style="margin-bottom: 0.5rem;">
+                                                        <strong style="color: #ffd700; font-size: 1rem;">${productName}</strong>
+                                                    </div>
+                                                    <div style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.5); display: flex; gap: 1rem; flex-wrap: wrap;">
+                                                        <span>数量: <strong style="color: rgba(255, 255, 255, 0.7);">${quantity}点</strong></span>
+                                                        <span>単価: <strong style="color: rgba(255, 255, 255, 0.7);">¥${price.toLocaleString()}</strong></span>
+                                                    </div>
+                                                </div>
+                                                <div style="text-align: right; margin-left: 1rem;">
+                                                    <div style="font-size: 1.1rem; font-weight: 600; color: #ffd700;">
+                                                        ¥${(price * quantity).toLocaleString()}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('');
+                            }
+                            
+                            orderInfo.innerHTML = `
+                                <div style="margin-bottom: 1rem;">
+                                    <strong style="color: #ffd700;">お名前:</strong> ${customerName}
+                                </div>
+                                <div style="margin-bottom: 1rem;">
+                                    <strong style="color: #ffd700;">メールアドレス:</strong> ${customerEmail}
+                                </div>
+                                <div style="margin-bottom: 1rem;">
+                                    <strong style="color: #ffd700;">配送先:</strong><br>
+                                    <span style="white-space: pre-line;">${shippingAddress}</span>
+                                </div>
+                                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                                    <h4 style="color: #ffd700; margin-bottom: 0.8rem; font-size: 1rem;">ご注文商品</h4>
+                                    ${itemsHtml || '<div style="color: rgba(255, 255, 255, 0.6);">商品情報を取得中...</div>'}
+                                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1); text-align: right;">
+                                        <div style="font-size: 1.1rem;">
+                                            <strong style="color: #ffd700;">合計金額:</strong> ¥${totalAmount.toLocaleString()}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                })
+                .catch(error => {
+                    console.error('注文情報の取得エラー:', error);
+                    document.getElementById('orderInfo').innerHTML = `
+                        <div style="color: rgba(255, 255, 255, 0.6);">
+                            注文情報の取得に失敗しました。<br>
+                            注文は正常に完了しています。確認メールをご確認ください。
+                        </div>
+                    `;
+                });
+        } else {
+            document.getElementById('orderInfo').textContent = '注文情報を取得できませんでした。';
+        }
+    </script>
+</body>
+</html>

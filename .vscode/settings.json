@@ -1,0 +1,41 @@
+{
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/public/**": true,
+    "**/videos/**": true,
+    "**/images/**": true,
+    "**/*.mp4": true,
+    "**/*.mov": true,
+    "**/*.webm": true,
+    "**/*.jpg": true,
+    "**/*.JPG": true,
+    "**/*.jpeg": true,
+    "**/*.JPEG": true,
+    "**/*.png": true,
+    "**/*.PNG": true,
+    "**/*.gif": true,
+    "**/*.GIF": true
+  },
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/public/images": true,
+    "**/public/videos": true,
+    "**/videos": true,
+    "**/images": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/public/images": true,
+    "**/public/videos": true,
+    "**/videos": true,
+    "**/images": true,
+    "**/*.mp4": true,
+    "**/*.mov": true,
+    "**/*.webm": true,
+    "**/*.jpg": true,
+    "**/*.JPG": true,
+    "**/*.jpeg": true,
+    "**/*.png": true,
+    "**/*.PNG": true
+  }
+}

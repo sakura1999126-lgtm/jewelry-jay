@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEST TOKYO JEWELS - Coming Soon</title>
+    <!-- Favicon設定 - 検索結果アイコン用 -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/images/IMG_7300.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/images/IMG_7300.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/images/IMG_7300.png">
+    <link rel="shortcut icon" href="https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/images/IMG_7300.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500&family=Shippori+Mincho:wght@400;500&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .coming-soon-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            background: #000;
+        }
+        
+        .coming-soon-content {
+            text-align: center;
+            padding: 3rem 2rem;
+            position: relative;
+            z-index: 10001;
+        }
+        
+        .coming-soon-logo {
+            max-width: 200px;
+            max-height: 150px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            margin: 0 auto 3rem;
+            opacity: 1;
+            animation: logoLuxuryFloat 6s ease-in-out infinite,
+                       logoLuxuryGlow 5s ease-in-out infinite;
+            filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.35)) drop-shadow(0 0 24px rgba(255, 215, 0, 0.15));
+        }
+        
+        .coming-soon-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 200, 0, 0.5);
+            letter-spacing: 4px;
+            line-height: 1.2;
+            background: linear-gradient(135deg, rgba(255, 200, 0, 0.9) 0%, rgba(255, 180, 0, 0.9) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: heroFadeIn 2.5s ease-out 0.5s forwards;
+            opacity: 0;
+        }
+        
+        .coming-soon-subtitle {
+            font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+            font-size: 1.2rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.7);
+            text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.7);
+            letter-spacing: 5px;
+            margin-bottom: 1rem;
+            animation: heroFadeIn 2.5s ease-out 1s forwards;
+            opacity: 0;
+        }
+        
+        .coming-soon-message {
+            font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+            font-size: 1rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.6);
+            text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.7);
+            letter-spacing: 3px;
+            line-height: 1.8;
+            margin-top: 2rem;
+            animation: heroFadeIn 2.5s ease-out 1.5s forwards;
+            opacity: 0;
+        }
+        
+        .coming-soon-divider {
+            width: 120px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+            margin: 2rem auto;
+            opacity: 0;
+            animation: fadeIn 1s ease-in 1.5s forwards;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+        
+        @media (max-width: 768px) {
+            .coming-soon-title {
+                font-size: 2.5rem;
+            }
+            
+            .coming-soon-subtitle {
+                font-size: 1rem;
+            }
+            
+            .coming-soon-message {
+                font-size: 0.9rem;
+            }
+            
+            .coming-soon-logo {
+                max-width: 150px;
+                max-height: 112px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景動画 -->
+    <div class="video-background" id="videoBackground">
+        <video id="bgVideo"
+               src="https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/videos/%E3%82%B5%E3%82%A4%E3%83%88%E7%94%A8%20PV.mp4"
+               width="1920" height="1080"
+               autoplay loop muted playsinline webkit-playsinline x5-playsinline
+               preload="auto"
+               disableRemotePlayback disablePictureInPicture>
+        </video>
+        <div class="video-overlay" aria-hidden="true"></div>
+    </div>
+
+    <!-- Coming Soon コンテンツ -->
+    <div class="coming-soon-container">
+        <div class="coming-soon-content">
+            <img src="https://pub-23a88b535b73423c909a3b841e3fde53.r2.dev/images/wtj%20logo.png" alt="WEST TOKYO JEWELS" class="coming-soon-logo">
+            <h1 class="coming-soon-title">COMING SOON</h1>
+            <div class="coming-soon-divider"></div>
+            <p class="coming-soon-subtitle">まもなく公開いたします</p>
+            <p class="coming-soon-message">シンプルで洗練されたデザインの<br>プレミアムジュエリーをお届けします</p>
+        </div>
+    </div>
+
+    <script>
+        // 背景動画の初期化（index.htmlと同じロジック）
+        function initBackgroundVideo() {
+            const video = document.getElementById('bgVideo');
+            if (!video) return;
+
+            video.addEventListener('loadeddata', () => {
+                video.play().catch(err => {
+                    console.log('Video autoplay failed:', err);
+                });
+            });
+
+            video.addEventListener('error', () => {
+                const videoBackground = document.getElementById('videoBackground');
+                if (videoBackground) {
+                    videoBackground.classList.add('video-fallback-active');
+                }
+            });
+        }
+
+        // iOS対応: ユーザーインタラクション後に動画を再生
+        (function setupIosVideoPlayOnInteraction() {
+            var isIOS =
+                /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            if (!isIOS) return;
+
+            var vid = document.getElementById('bgVideo');
+            if (!vid) return;
+
+            function tryPlayOnce() {
+                if (!vid.paused) return;
+                vid.play().catch(function () {});
+            }
+
+            document.addEventListener('touchstart', tryPlayOnce, { once: true });
+            window.addEventListener('scroll', tryPlayOnce, { once: true });
+            document.addEventListener('click', tryPlayOnce, { once: true });
+        })();
+
+        // ページロード時に動画を初期化
+        document.addEventListener('DOMContentLoaded', () => {
+            initBackgroundVideo();
+        });
+    </script>
+</body>
+</html>

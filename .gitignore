@@ -1,0 +1,26 @@
+node_modules/
+.env
+.DS_Store
+*.log
+
+# 動画ファイル（11MB程度なのでGit管理に含める）
+# 大きな動画ファイル（50MB以上）がある場合は、以下をコメントアウトして除外してください
+# *.mov
+# *.mp4
+# *.webm
+# public/videos/*.mov
+# public/videos/*.mp4
+# public/videos/*.webm
+
+# 商品画像（R2に保存済み。ローカルはアップロード用に残す）
+public/images/*.JPG
+public/images/*.jpg
+public/images/*.jpeg
+public/images/*.png
+!public/images/.gitkeep
+
+# サーバーファイル（Cloudflare Pagesでは不要）
+# server.js は残しておきますが、デプロイ時は使用されません
+
+# 在庫管理ファイル（サーバー上で直接管理、デプロイ時に上書きされないようにする）
+products.json

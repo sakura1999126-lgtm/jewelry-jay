@@ -1,0 +1,30 @@
+{
+  "name": "jewelry-jay",
+  "version": "1.0.0",
+  "description": "ジュエリーECサイト - Stripe決済対応準備済み",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "upload:r2": "node scripts/upload-to-r2.js",
+    "try": "node scripts/upload-to-r2.js && node server.js"
+  },
+  "keywords": [
+    "jewelry",
+    "ecommerce",
+    "stripe",
+    "nodejs",
+    "vercel"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.700.0",
+    "stripe": "^14.0.0",
+    "nodemailer": "^6.9.7"
+  }
+}
+

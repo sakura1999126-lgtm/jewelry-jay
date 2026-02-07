@@ -1,0 +1,40 @@
+# 大きなファイルをインデックスから除外
+node_modules/
+public/images/
+public/videos/
+videos/
+images/
+
+# 動画ファイル（Cursorのインデックスから完全に除外）
+**/*.mp4
+**/*.mov
+**/*.webm
+**/*.avi
+**/*.mkv
+
+# 画像ファイル（Cursorのインデックスから完全に除外）
+**/*.JPG
+**/*.jpg
+**/*.jpeg
+**/*.JPEG
+**/*.png
+**/*.PNG
+**/*.gif
+**/*.GIF
+**/*.bmp
+**/*.BMP
+**/*.tiff
+**/*.TIFF
+
+# 音声ファイル
+**/*.wav
+**/*.mp3
+**/*.m4a
+**/*.aac
+**/*.flac
+
+# その他の大きなファイル
+**/*.zip
+**/*.tar
+**/*.gz
+**/*.rar

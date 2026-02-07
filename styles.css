@@ -1,0 +1,2947 @@
+/* リセット & ベーススタイル */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    min-height: 100vh;
+}
+
+body {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    color: #fff;
+    position: relative;
+    font-weight: 300;
+    letter-spacing: 1px;
+    background: #000;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+}
+
+body.element-selection-mode * {
+    cursor: crosshair !important;
+}
+
+/* スプラッシュスクリーン */
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    animation: splashFadeIn 0.5s ease forwards;
+}
+
+.splash-screen.hide {
+    animation: splashFadeOut 0.5s ease forwards;
+}
+
+.splash-logo {
+    max-width: 150px;
+    max-height: 112px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    opacity: 1;
+    position: relative;
+    animation: logoLuxuryFloat 6s ease-in-out infinite,
+               logoLuxuryGlow 5s ease-in-out infinite;
+    filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.35)) drop-shadow(0 0 24px rgba(255, 215, 0, 0.15));
+}
+
+@keyframes splashFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes splashFadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes logoLuxuryFloat {
+    0%, 100% {
+        transform: translateY(0px) scale(1);
+    }
+    50% {
+        transform: translateY(-3px) scale(1.01);
+    }
+}
+
+@keyframes logoLuxuryGlow {
+    0%, 100% {
+        filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.35)) 
+                drop-shadow(0 0 24px rgba(255, 215, 0, 0.15))
+                brightness(1);
+    }
+    25% {
+        filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.4)) 
+                drop-shadow(0 0 28px rgba(255, 215, 0, 0.2))
+                brightness(1.02);
+    }
+    50% {
+        filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.45)) 
+                drop-shadow(0 0 32px rgba(255, 215, 0, 0.25))
+                brightness(1.04);
+    }
+    75% {
+        filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.4)) 
+                drop-shadow(0 0 28px rgba(255, 215, 0, 0.2))
+                brightness(1.02);
+    }
+}
+
+
+/* 背景動画: video を z-index マイナスの「背景」にせず、通常レイヤー(z-index:0)に。UI は 1 以上でその上に重ねる。
+   position: fixed は使用しない（iOS Safari での描画不具合回避）。absolute + 100vh で先頭ブロックとして配置。 */
+.video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    min-height: 100vh;
+    z-index: 0;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.video-background video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+/* モバイル対応: 動画が確実に表示されるように（共通で position: absolute のため、スマホではサイズ・visibility を強化） */
+@media (max-width: 768px) {
+    .video-background {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        min-width: 100vw !important;
+        min-height: 100vh !important;
+        /* iOS: z-index:-1 の親だと動画が「再生しているが描画されない」になるため 0 に。.main-content 等は 1 以上で前面。 */
+        z-index: 0 !important;
+        /* iOS: overflow:hidden が動画レイヤーを切り落として描画不能になることがあるため visible に。動画は 100vw×100vh で同サイズのためはみ出しなし。 */
+        overflow: visible !important;
+        background: #000 !important;
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    /* iOS: transform は使わない。top/left:0 で全面。opacity/visibility は 1/visible のみ。 */
+    .video-background video {
+        width: 100vw !important;
+        height: 100vh !important;
+        min-width: 100vw !important;
+        min-height: 100vh !important;
+        object-fit: cover !important;
+        display: block !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        z-index: 0 !important;
+    }
+}
+
+/* 6. 動画が読み込めない・再生できない場合のみ表示。error またはタイムアウトで .video-fallback-active を付与。
+   PC も再生失敗時は同様に黒背景で表示。 */
+.video-background.video-fallback-active video {
+    display: none !important;
+}
+.video-background.video-fallback-active {
+    background: #000;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* 動画全体のオーバーレイ + 下部を完全に黒へフェード */
+    background: 
+        linear-gradient(to bottom, 
+            rgba(0, 0, 0, 0.4) 0%,
+            rgba(0, 0, 0, 0.3) 40%,
+            rgba(0, 0, 0, 0.5) 60%,
+            rgba(0, 0, 0, 0.8) 80%,
+            #000000 95%,
+            #000000 100%
+        );
+    z-index: 1;
+}
+
+.video-fallback {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+}
+
+/* ヘッダー */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background: rgba(15, 35, 28, 0.6);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.header:hover {
+    background: rgba(15, 35, 28, 0.75);
+    border-bottom-color: rgba(255, 215, 0, 0.3);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 2rem;
+}
+
+.sidebar-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+    z-index: 101;
+}
+
+.sidebar-toggle span {
+    width: 25px;
+    height: 3px;
+    background: #ffd700;
+    transition: all 0.3s;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+.logo-link {
+    display: inline-block;
+    opacity: 0;
+    animation: fadeIn 1s ease-in 0.5s forwards;
+    text-decoration: none;
+    padding: 0;
+    position: relative;
+    overflow: visible;
+}
+
+.logo-img {
+    height: 40px;
+    width: auto;
+    max-width: 544px;
+    display: block;
+    margin: 0;
+    padding: 0;
+    transition: all 0.3s ease;
+    object-fit: contain;
+}
+
+@media (min-width: 769px) {
+    .logo-img {
+        height: 45px;
+    }
+}
+
+.logo-link:hover .logo-img {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+}
+
+.cart-icon-container {
+    position: relative;
+}
+
+.cart-icon {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #ffd700;
+    position: relative;
+    overflow: visible;
+}
+
+.cart-icon:hover {
+    background: rgba(255, 215, 0, 0.2);
+    border-color: rgba(255, 215, 0, 0.6);
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+.cart-icon svg {
+    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
+}
+
+.cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff4757;
+    color: #fff;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* サイドバー */
+.sidebar {
+    position: fixed;
+    left: -300px;
+    top: 0;
+    width: 300px;
+    height: 100vh;
+    background: linear-gradient(135deg, rgba(25, 25, 25, 0.92) 0%, rgba(18, 18, 18, 0.95) 100%);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    box-shadow: 2px 0 30px rgba(0, 0, 0, 0.5);
+    z-index: 99;
+    transition: left 0.3s ease;
+    padding: 100px 2rem 2rem;
+    overflow-y: auto;
+    border-right: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.sidebar.active {
+    left: 0;
+}
+
+@media (min-width: 769px) {
+    .sidebar {
+        left: -300px;
+        padding: 100px 2.5rem 2rem;
+    }
+    
+    .sidebar.active {
+        left: 0;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        transition: margin-left 0.3s ease;
+    }
+    
+    .sidebar.active ~ .main-content,
+    body:has(.sidebar.active) .main-content {
+        margin-left: 300px;
+    }
+    
+    .sidebar-toggle {
+        display: flex;
+    }
+}
+
+.sidebar-content {
+    padding-top: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.sidebar-title {
+    font-family: 'Shippori Mincho', 'Noto Sans JP', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #ffd700;
+    letter-spacing: 1px;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.category-btn {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    background: linear-gradient(135deg, rgba(35, 35, 35, 0.4) 0%, rgba(25, 25, 25, 0.5) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 1.1rem 1.8rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    text-align: left;
+    text-transform: none;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.category-btn::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: linear-gradient(180deg, #ffd700, #ffed4e);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.category-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 215, 0, 0.3);
+    transform: translateX(8px);
+    color: #fff;
+}
+
+.category-btn:hover::before {
+    transform: scaleY(1);
+}
+
+.category-btn.active {
+    background: rgba(255, 215, 0, 0.15);
+    border-color: rgba(255, 215, 0, 0.6);
+    color: #ffd700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    font-weight: 400;
+}
+
+.category-btn.active::before {
+    transform: scaleY(1);
+}
+
+/* メインコンテンツ */
+.main-content {
+    background: transparent;
+    min-height: 100vh;
+    padding: 0;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    overflow-x: hidden;
+    margin-left: 0;
+    transition: margin-left 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+}
+
+body.splash-complete .main-content {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, margin-left 0.3s ease;
+}
+
+
+.content-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* ヒーローセクション */
+.hero-section {
+    text-align: center;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    will-change: opacity, transform;
+}
+
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 6rem 3rem 4rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5rem;
+    font-weight: 700;
+    margin-bottom: 2.5rem;
+    text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 200, 0, 0.5);
+    letter-spacing: 4px;
+    line-height: 1.2;
+    background: linear-gradient(135deg, rgba(255, 200, 0, 0.9) 0%, rgba(255, 180, 0, 0.9) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0;
+    animation: heroFadeIn 2.5s ease-out 0.5s forwards;
+}
+
+.hero-description {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 1.1rem;
+    font-weight: 300;
+    opacity: 0;
+    color: rgba(255, 255, 255, 0.7);
+    text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.7);
+    letter-spacing: 4px;
+    line-height: 1.8;
+    margin-top: 0.5rem;
+    animation: heroFadeIn 2.5s ease-out 1.5s forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ヒーローセクション用のゆっくりシンプルなアニメーション */
+@keyframes heroFadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0.85;
+    }
+}
+
+.hero-subtitle {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 1.3rem;
+    font-weight: 300;
+    opacity: 0;
+    text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.7);
+    letter-spacing: 5px;
+    text-transform: none;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0.5rem;
+    animation: heroFadeIn 2.5s ease-out 1s forwards;
+}
+
+.hero-divider {
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffd700, transparent);
+    margin: 2rem auto 0;
+    opacity: 0;
+    animation: fadeIn 1s ease-in 1.5s forwards;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+}
+
+.fade-in {
+    opacity: 0;
+    animation: fadeIn 1s ease-in forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 商品セクション */
+.products-section {
+    margin-top: 0;
+    padding: 4rem 2rem;
+    background: #000000;
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-in, transform 0.6s ease-in;
+    will-change: opacity, transform;
+}
+
+.products-section-header {
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.products-section-title {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: rgba(255, 215, 0, 0.9);
+    letter-spacing: 3px;
+    margin: 0;
+}
+
+.products-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+    transition: opacity 0.15s ease;
+    opacity: 1;
+}
+
+/* 商品一覧の最初の商品が見やすくなるように */
+.products-section:not([style*="opacity: 0"]) .products-container {
+    opacity: 1;
+}
+
+@media (min-width: 769px) {
+    .products-container {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2.5rem;
+    }
+}
+
+
+.loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 3rem;
+}
+
+.product-card {
+    background: linear-gradient(135deg, rgba(28, 28, 28, 0.65) 0%, rgba(20, 20, 20, 0.7) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    border-radius: 0;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+    position: relative;
+}
+
+/* アニメーションなしの状態（インラインスタイルで上書きされる） */
+.product-card[style*="animation: none"] {
+    opacity: 1 !important;
+}
+
+.product-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.product-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    border-color: rgba(255, 215, 0, 0.6);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.4);
+}
+
+.product-card:hover::before {
+    opacity: 1;
+}
+
+.product-card-soldout {
+    opacity: 0.7;
+}
+
+.product-card-soldout .product-image {
+    filter: grayscale(30%);
+}
+
+.product-soldout-badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.95) 0%, rgba(255, 165, 0, 0.95) 100%);
+    color: #000;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 215, 0, 0.5);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.product-cart-badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    background: #ff4444;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(255, 68, 68, 0.5), 0 0 12px rgba(255, 68, 68, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    line-height: 1;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.product-image {
+    width: 100%;
+    aspect-ratio: 1;
+    height: auto;
+    object-fit: cover;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    transition: transform 0.4s ease;
+    position: relative;
+    z-index: 0;
+}
+
+.product-image-placeholder {
+    width: 100%;
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-radius: 0;
+}
+
+.product-image-placeholder::after {
+    content: '📷';
+    font-size: 2rem;
+    opacity: 0.3;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.05);
+}
+
+.product-card-image-wrap {
+    position: relative;
+}
+
+.product-card-image-caption {
+    font-size: 0.7rem;
+    color: rgba(255, 215, 0, 0.75);
+    margin: 0.25rem 0 0;
+    padding: 0 0.25rem;
+    line-height: 1.3;
+    letter-spacing: 0.5px;
+}
+
+.product-info {
+    padding: 0.75rem 1rem;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    min-height: auto;
+}
+
+.product-name {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 商品カードのサイズ表示は削除（詳細モーダルの .product-size-option 等は別） */
+
+.product-description {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 0.75rem;
+    font-weight: 300;
+    opacity: 0.85;
+    margin-bottom: 0.6rem;
+    line-height: 1.5;
+    letter-spacing: 0.5px;
+}
+
+.product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 40px;
+}
+
+.product-price-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+}
+
+.product-price {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #ffd700;
+    letter-spacing: 1px;
+}
+
+.product-original-price {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: line-through;
+    letter-spacing: 0.5px;
+}
+
+.add-to-cart-btn {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0.1) 100%);
+    border: 1px solid rgba(255, 215, 0, 0.5);
+    color: #ffd700;
+    padding: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+}
+
+.add-to-cart-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+
+/* カートパネル */
+/* 商品詳細モーダル：画面固定・見切れないレイアウト */
+.product-modal {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    z-index: 1000;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box;
+}
+
+.product-modal.active {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    opacity: 1;
+}
+
+.product-modal-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.product-modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 428px;
+    height: 100%;
+    max-height: 100dvh;
+    max-height: 100vh;
+    background: linear-gradient(135deg, rgba(22, 22, 22, 0.95) 0%, rgba(15, 15, 15, 0.98) 100%);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), 0 0 80px rgba(255, 215, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    border-radius: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem;
+    padding-top: 3rem;
+    padding-left: calc(1rem + env(safe-area-inset-left));
+    padding-right: calc(1rem + env(safe-area-inset-right));
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+    z-index: 1001;
+    animation: modalSlideIn 0.35s ease-out;
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+@media (min-width: 769px) {
+    .product-modal-content {
+        width: 92%;
+        max-width: 1000px;
+        height: auto;
+        max-height: 88vh;
+        margin: auto;
+        border-radius: 24px;
+        padding: 2rem;
+        padding-top: 3.5rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        padding-bottom: 2rem;
+        align-self: center;
+        flex: none;
+    }
+
+    .product-detail-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+    }
+
+    .product-detail-image {
+        max-height: 65vh;
+    }
+
+    .product-detail-info {
+        gap: 1rem;
+    }
+
+    .product-detail-name {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .product-detail-description {
+        font-size: 0.9rem;
+        margin-bottom: 0.8rem;
+    }
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.product-modal-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.5);
+    width: 32px;
+    height: 32px;
+    font-size: 1.5rem;
+    font-weight: 300;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s, background 0.2s;
+    z-index: 1002;
+    line-height: 1;
+}
+
+.product-modal-close:hover {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.product-detail-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    align-items: start;
+    min-height: 0;
+    flex: 1 1 auto;
+}
+
+.product-detail-image-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.product-detail-image-main {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    background: #0a0a0a;
+}
+
+.product-detail-image {
+    max-width: 100%;
+    max-height: 50vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    cursor: pointer;
+}
+
+.product-image-caption {
+    font-size: 0.8rem;
+    color: rgba(255, 215, 0, 0.85);
+    margin: 0.5rem 0 0;
+    line-height: 1.4;
+    letter-spacing: 0.5px;
+}
+
+.product-image-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 0;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    z-index: 2;
+    line-height: 1;
+}
+
+.product-detail-image-main:hover .product-image-nav,
+.product-image-nav:focus {
+    display: flex;
+}
+
+.product-image-prev { left: 8px; }
+.product-image-next { right: 8px; }
+
+.product-image-nav:hover {
+    background: rgba(0, 0, 0, 0.75);
+}
+
+/* 画像タップで元画像を表示するライトボックス */
+.product-image-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1003;
+    background: rgba(0, 0, 0, 0.95);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.product-image-lightbox.active {
+    display: flex;
+}
+
+.product-image-lightbox-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    color: #ffd700;
+    font-size: 1.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    z-index: 1004;
+}
+
+.product-image-lightbox-img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+.product-detail-image-thumbnails {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 8px 0;
+    justify-content: center;
+    -webkit-overflow-scrolling: touch;
+}
+
+.product-detail-image-thumbnails::-webkit-scrollbar {
+    height: 3px;
+}
+
+.product-detail-image-thumbnails::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.product-image-thumbnail {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+    background: #111;
+}
+
+.product-image-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-image-thumbnail-caption {
+    display: none;
+}
+
+.product-image-thumbnail:hover,
+.product-image-thumbnail.active {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.product-image-thumbnail.active {
+    border-color: #ffd700;
+}
+
+.product-detail-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2rem;
+    padding-right: 0;
+    padding-left: 0;
+    width: 100%;
+}
+
+.product-detail-name {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-detail-description {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 1.1rem;
+    line-height: 2;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 1.5rem 0;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.product-detail-detailed-description {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 0.95rem;
+    line-height: 2.1;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 2rem 0;
+    white-space: pre-line;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 215, 0, 0.1);
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.product-detail-size-section {
+    margin-bottom: 2rem;
+}
+
+.product-detail-size-label {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1rem;
+    display: block;
+    letter-spacing: 2px;
+    text-transform: none;
+    text-align: center;
+}
+
+.product-detail-sizes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    width: 100%;
+    max-width: 320px;
+}
+
+.product-size-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.product-size-group-label {
+    font-size: 0.85rem;
+    color: rgba(255, 215, 0, 0.9);
+    letter-spacing: 1px;
+}
+
+.product-size-group-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.product-size-option {
+    flex: 1;
+    min-width: 120px;
+    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.85);
+    position: relative;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.product-size-option:hover {
+    border-color: rgba(255, 215, 0, 0.5);
+    background: rgba(255, 215, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.product-size-option.active {
+    border-color: #ffd700;
+    background: rgba(255, 215, 0, 0.15);
+    color: #ffd700;
+    font-weight: 400;
+}
+
+.product-size-option.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.product-size-name {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.product-size-mm {
+    display: block;
+    font-size: 0.95rem;
+    line-height: 1.3;
+}
+
+.product-size-in {
+    display: block;
+    font-size: 0.85rem;
+    opacity: 0.9;
+    line-height: 1.3;
+}
+
+.product-size-price-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    margin-top: 0.25rem;
+}
+
+.product-size-price {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #ffd700;
+    opacity: 1;
+}
+
+.product-size-original-price {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.product-size-stock {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 0.3rem;
+    letter-spacing: 0.5px;
+}
+
+.product-size-stock-zero {
+    color: rgba(255, 100, 100, 0.8);
+}
+
+.product-detail-price-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 215, 0, 0.2);
+    width: 100%;
+}
+
+.product-detail-price {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: 2px;
+}
+
+.product-detail-original-price {
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: line-through;
+    letter-spacing: 1px;
+}
+
+.product-detail-sale-badge {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: #90ee90;
+    background: linear-gradient(135deg, rgba(0, 100, 0, 0.3) 0%, rgba(0, 50, 0, 0.25) 100%);
+    border: 1px solid rgba(0, 128, 0, 0.6);
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    letter-spacing: 2px;
+    margin: 0.2rem 0;
+    display: inline-block;
+    text-transform: uppercase;
+    box-shadow: 0 2px 12px rgba(0, 100, 0, 0.4), inset 0 1px 0 rgba(144, 238, 144, 0.2);
+}
+
+.product-detail-sale-price {
+    font-size: 2rem;
+    font-weight: 400;
+    color: #ffd700;
+    letter-spacing: 2px;
+}
+
+.product-detail-stock {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 1px;
+}
+
+.product-detail-actions {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.product-detail-add-cart {
+    width: 100%;
+    max-width: 320px;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    border: 2px solid #ffd700;
+    color: #000;
+    padding: 1.2rem 2.5rem;
+    border-radius: 12px;
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 1.1rem;
+    font-weight: 300;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: none;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.product-detail-add-cart:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5);
+    background: linear-gradient(135deg, #ffed4e 0%, #ffd700 100%);
+}
+
+.product-detail-add-cart:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .product-detail-container {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+    
+    .product-detail-name {
+        font-size: 1.35rem;
+        letter-spacing: 2px;
+    }
+    
+    .product-detail-price {
+        gap: 0.3rem;
+    }
+
+    .product-detail-original-price {
+        font-size: 1rem;
+    }
+
+    .product-detail-sale-badge {
+        font-size: 0.6rem;
+        padding: 0.2rem 0.5rem;
+        letter-spacing: 1.5px;
+        margin: 0.15rem 0;
+    }
+
+    .product-detail-sale-price {
+        font-size: 1.25rem;
+    }
+    
+    .product-detail-size-section {
+        margin-bottom: 1rem;
+    }
+    
+    .product-size-option {
+        min-width: 100px;
+        padding: 0.75rem 1rem;
+    }
+    
+    /* スマホでの詳細説明文の改行改善 */
+    .product-detail-detailed-description {
+        font-size: 0.9rem;
+        line-height: 1.8;
+        padding: 1rem;
+        margin: 0 0 1.5rem 0;
+        word-break: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: pre-line;
+        letter-spacing: 0.5px;
+        text-align: left;
+        hyphens: none;
+    }
+}
+
+.cart-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 200;
+    display: none;
+}
+
+.cart-overlay.active {
+    display: block;
+}
+
+.cart-panel {
+    position: fixed;
+    right: -400px;
+    top: 0;
+    width: 400px;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
+    background: linear-gradient(135deg, rgba(25, 25, 25, 0.92) 0%, rgba(18, 18, 18, 0.95) 100%);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.6), inset 1px 0 0 rgba(255, 255, 255, 0.03);
+    border-left: 1px solid rgba(255, 215, 0, 0.1);
+    z-index: 201;
+    transition: right 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    min-height: 0;
+}
+
+.cart-panel.active {
+    right: 0;
+}
+
+.cart-panel-header {
+    padding: 1.5rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.cart-panel-header h2 {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #ffd700;
+    letter-spacing: 3px;
+}
+
+.cart-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.cart-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.cart-items {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem;
+    -webkit-overflow-scrolling: touch;
+    min-height: 0;
+    max-height: calc(100vh - 200px);
+    box-sizing: border-box;
+}
+
+.cart-empty {
+    text-align: center;
+    padding: 3rem;
+    opacity: 0.6;
+}
+
+.cart-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.cart-item-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 0;
+}
+
+.cart-item-details {
+    flex: 1;
+}
+
+.cart-item-name {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.cart-item-size {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: rgba(255, 215, 0, 0.8);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+}
+
+.cart-item-price {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    color: #ffd700;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.cart-item-quantity {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.quantity-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.quantity-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.cart-item-remove {
+    background: rgba(255, 71, 87, 0.3);
+    border: none;
+    color: #ff4757;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    font-weight: 300;
+    line-height: 1;
+    margin-top: 0.5rem;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.cart-item-remove:hover {
+    background: rgba(255, 71, 87, 0.5);
+    transform: scale(1.1);
+}
+
+.cart-footer {
+    padding: 1.5rem;
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+    border-top: 2px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(25, 25, 25, 0.92) 0%, rgba(18, 18, 18, 0.95) 100%);
+}
+
+.cart-total {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+    color: #ffd700;
+    letter-spacing: 3px;
+}
+
+.checkout-btn {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    width: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-transform: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.checkout-btn:hover:not(:disabled) {
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.checkout-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 決済ページ */
+.checkout-container {
+    min-height: 100vh;
+    background: #000;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.checkout-container::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.checkout-container > * {
+    position: relative;
+    z-index: 1;
+}
+
+.checkout-header {
+    max-width: 1200px;
+    margin: 0 auto 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+}
+
+.checkout-logo-link {
+    display: inline-block;
+    text-decoration: none;
+    padding: 0;
+}
+
+.checkout-logo-img {
+    height: 35px;
+    width: auto;
+    max-width: 400px;
+    display: block;
+    margin: 0;
+    padding: 0;
+    transition: all 0.3s ease;
+    object-fit: contain;
+}
+
+.checkout-logo-link:hover .checkout-logo-img {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+}
+
+.back-link {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    background: rgba(255, 215, 0, 0.05);
+}
+
+.back-link:hover {
+    color: #ffd700;
+    border-color: rgba(255, 215, 0, 0.4);
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.checkout-main {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.checkout-content {
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+    padding: 0 1rem;
+}
+
+.checkout-cart-section,
+.checkout-payment-section {
+    background: linear-gradient(135deg, rgba(28, 28, 28, 0.85) 0%, rgba(20, 20, 20, 0.9) 100%);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 20px;
+    padding: 1.75rem;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255, 215, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(255, 215, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    opacity: 1;
+}
+
+.checkout-cart-section h2,
+.checkout-payment-section h2 {
+    font-family: 'Playfair Display', 'Shippori Mincho', serif;
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    width: 100%;
+    opacity: 1;
+    letter-spacing: 4px;
+    text-align: center;
+    position: relative;
+    padding-bottom: 1.5rem;
+    line-height: 1.4;
+    overflow: visible;
+    background: linear-gradient(135deg, rgba(198, 173, 83, 0.7) 0%, rgba(255, 200, 0, 0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    vertical-align: bottom;
+}
+
+.checkout-cart-section h2::after,
+.checkout-payment-section h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 215, 0, 0.4), 
+        rgba(255, 215, 0, 0.8), 
+        rgba(255, 215, 0, 0.4), 
+        transparent
+    );
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.checkout-items {
+    margin-bottom: 2rem;
+}
+
+.checkout-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.checkout-item-soldout {
+    opacity: 0.8;
+}
+
+.checkout-item-soldout .checkout-item-image img {
+    filter: grayscale(30%);
+}
+
+.checkout-item-image {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 0;
+}
+
+.checkout-item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+    display: block;
+}
+
+.checkout-item-image > div {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+}
+
+.checkout-item-soldout-badge {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.95) 0%, rgba(255, 165, 0, 0.95) 100%);
+    color: #000;
+    font-size: 0.55rem;
+    font-weight: 600;
+    padding: 0.2rem 0.4rem;
+    border-radius: 10px;
+    z-index: 10;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 0 6px rgba(255, 215, 0, 0.5);
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.checkout-item-details h3 {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-weight: 300;
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+    line-height: 1.4;
+    word-break: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.checkout-item-price {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    color: #ffd700;
+    font-weight: 300;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    margin-top: 0.5rem;
+}
+
+.checkout-summary {
+    border-top: 2px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1rem;
+}
+
+.summary-row {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+}
+
+.summary-row.total {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #ffd700;
+    border-top: 2px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1rem;
+    margin-top: 1rem;
+    letter-spacing: 3px;
+}
+
+.summary-row.total span:first-child {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.stripe-placeholder {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    text-align: center;
+    padding: 2rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.stripe-info {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: left;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.stripe-info ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+}
+
+.stripe-info li {
+    padding: 0.5rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.stripe-info li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #ffd700;
+}
+
+.stripe-test-btn {
+    font-family: 'Noto Sans JP', 'Montserrat', sans-serif;
+    width: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.stripe-test-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    /* ヘッダー */
+    .header {
+        padding: 0.75rem 1rem;
+    }
+
+    .logo-img {
+        height: 28px;
+        max-width: 180px;
+    }
+
+    /* メインコンテンツ */
+    .main-content {
+        padding: 65px 1rem 1.5rem;
+    }
+
+    /* ヒーローセクション */
+    .hero-section {
+        min-height: 100vh;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .hero-content {
+        padding: 3rem 1.5rem 2rem;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+        letter-spacing: 2px;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+        letter-spacing: 4px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .hero-description {
+        font-size: 0.9rem;
+        letter-spacing: 3px;
+        margin-top: 0.5rem;
+        white-space: nowrap;
+    }
+    
+    .products-section {
+        padding: 3rem 1rem;
+    }
+
+    /* 商品セクション */
+    .products-section {
+        margin-top: 0;
+    }
+
+    .products-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        padding: 1rem 0;
+    }
+
+
+    /* 商品カード */
+    .product-card {
+        border-radius: 0;
+    }
+
+    .product-image {
+        aspect-ratio: 1;
+        height: auto;
+    }
+
+    .product-info {
+        padding: 0.4rem 0.45rem !important;
+        min-height: auto !important;
+        height: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+        width: 100% !important;
+    }
+
+    .product-card .product-info {
+        padding: 0.4rem 0.45rem !important;
+    }
+
+    .product-name {
+        font-size: 0.65rem !important;
+        margin-bottom: 0.2rem !important;
+        letter-spacing: 0.2px !important;
+        line-height: 1.2 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        width: 100% !important;
+        flex-shrink: 0 !important;
+    }
+
+    .product-card .product-name {
+        font-size: 0.65rem !important;
+        margin-bottom: 0.2rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .product-footer {
+        margin-top: auto !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 0.25rem !important;
+        flex-shrink: 0 !important;
+    }
+
+    .product-price-wrapper {
+        gap: 0.1rem !important;
+    }
+
+    .product-price {
+        font-size: 0.75rem !important;
+        letter-spacing: 0.2px !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+    }
+
+    .product-original-price {
+        font-size: 0.6rem !important;
+    }
+
+    .product-card .product-price {
+        font-size: 0.75rem !important;
+    }
+
+    .add-to-cart-btn {
+        width: 28px !important;
+        height: 28px !important;
+        padding: 0.25rem !important;
+        flex-shrink: 0 !important;
+        min-width: 28px !important;
+    }
+
+    .add-to-cart-btn svg {
+        width: 14px !important;
+        height: 14px !important;
+    }
+
+    .product-soldout-badge {
+        top: 0.5rem !important;
+        right: 0.5rem !important;
+        font-size: 0.6rem !important;
+        padding: 0.25rem 0.5rem !important;
+    }
+
+    .product-cart-badge {
+        top: 0.5rem !important;
+        left: 0.5rem !important;
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.75rem !important;
+    }
+
+/* チェックアウトフォーム */
+.checkout-form-section {
+    background: linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(10, 10, 10, 0.98) 100%);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 24px;
+    padding: 3.5rem 4rem;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.8),
+        0 0 0 1px rgba(255, 215, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(255, 215, 0, 0.05);
+    margin-top: 2rem;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 700px;
+}
+
+.checkout-form-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent,
+        rgba(255, 215, 0, 0.3),
+        rgba(255, 215, 0, 0.6),
+        rgba(255, 215, 0, 0.3),
+        transparent
+    );
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+.checkout-form-section h2 {
+    font-family: 'Playfair Display', 'Shippori Mincho', serif;
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin-bottom: 2.5rem;
+    color: #ffd700;
+    letter-spacing: 4px;
+    text-align: center;
+    position: relative;
+    padding-bottom: 1.5rem;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+.checkout-form-section h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 215, 0, 0.4), 
+        rgba(255, 215, 0, 0.8), 
+        rgba(255, 215, 0, 0.4), 
+        transparent
+    );
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.checkout-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    width: 100%;
+}
+
+.form-group label {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    color: rgba(255, 255, 255, 0.98);
+    font-size: 0.95rem;
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.form-group .field-hint {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    margin-left: auto;
+    font-style: italic;
+}
+
+.form-group .required {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.06) 100%);
+    border: 1.5px solid rgba(255, 215, 0, 0.2);
+    border-radius: 12px;
+    padding: 1.25rem 1.75rem;
+    color: #fff;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 1rem;
+    font-weight: 300;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 0.5px;
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    width: 100%;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 300;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: rgba(255, 215, 0, 0.7);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.1) 100%);
+    box-shadow: 
+        0 0 30px rgba(255, 215, 0, 0.25),
+        0 4px 12px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 -1px 0 rgba(255, 215, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.form-group input:hover:not(:focus),
+.form-group textarea:hover:not(:focus) {
+    border-color: rgba(255, 215, 0, 0.35);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.06) 100%);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.6;
+}
+
+.checkout-submit-btn {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+    background-size: 200% 100%;
+    color: #000;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Playfair Display', 'Shippori Mincho', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 1rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 8px 25px rgba(255, 215, 0, 0.3),
+        0 0 0 1px rgba(255, 215, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    width: 100%;
+}
+
+.checkout-submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.checkout-submit-btn:hover:not(:disabled)::before {
+    left: 100%;
+}
+
+.checkout-submit-btn:hover:not(:disabled) {
+    transform: translateY(-4px);
+    box-shadow: 
+        0 12px 35px rgba(255, 215, 0, 0.5),
+        0 0 0 1px rgba(255, 215, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    background-position: 100% 0;
+    letter-spacing: 4px;
+}
+
+.checkout-submit-btn:active:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.checkout-submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+@media (max-width: 768px) {
+    .checkout-content {
+        max-width: 100%;
+        padding: 0 0.5rem;
+        gap: 1rem;
+    }
+
+    .checkout-cart-section,
+    .checkout-payment-section {
+        padding: 1rem;
+        gap: 1rem !important;
+    }
+
+    .checkout-cart-section h2 {
+        font-size: 1.3rem !important;
+        margin-bottom: 0.5rem !important;
+        letter-spacing: 2px !important;
+    }
+
+    .checkout-items {
+        margin-bottom: 1rem !important;
+    }
+
+    .checkout-item {
+        padding: 0.75rem !important;
+        gap: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    .checkout-item-image {
+        width: 80px !important;
+        height: 80px !important;
+        flex-shrink: 0 !important;
+        overflow: hidden !important;
+        border-radius: 0 !important;
+    }
+
+    .checkout-item-image img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        border-radius: 0 !important;
+        display: block !important;
+    }
+
+    .checkout-item-image > div {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 0 !important;
+    }
+
+    .checkout-item-details {
+        min-width: 0 !important;
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .checkout-item-details h3 {
+        font-size: 0.9rem !important;
+        margin-bottom: 0.4rem !important;
+        letter-spacing: 0.5px !important;
+        line-height: 1.4 !important;
+        word-break: break-word !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+        white-space: normal !important;
+    }
+
+    .checkout-item-price {
+        font-size: 1rem !important;
+        letter-spacing: 1px !important;
+    }
+
+    .checkout-summary {
+        padding-top: 0.75rem !important;
+    }
+
+    .summary-row {
+        margin-bottom: 0.75rem !important;
+        font-size: 0.95rem !important;
+    }
+
+    .summary-row.total {
+        font-size: 1.2rem !important;
+        padding-top: 0.75rem !important;
+        margin-top: 0.75rem !important;
+    }
+
+    #outOfStockWarning {
+        padding: 0.5rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+
+    #outOfStockWarning p {
+        font-size: 0.8rem !important;
+        line-height: 1.3 !important;
+    }
+
+    .checkout-form-section {
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .checkout-form-section h2 {
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .checkout-form {
+        gap: 2rem;
+        max-width: 100%;
+    }
+    
+    .checkout-form-section {
+        padding: 2rem 1.5rem;
+        max-width: 100%;
+    }
+    
+    .form-group {
+        gap: 0.8rem;
+    }
+    
+    .form-group label {
+        font-size: 0.9rem;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        padding: 0.85rem 1rem;
+        font-size: 0.95rem;
+        border-radius: 8px;
+    }
+    
+    .form-group textarea {
+        min-height: 90px;
+    }
+    
+    .checkout-submit-btn {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        letter-spacing: 1.5px;
+        margin-top: 1rem;
+    }
+}
+
+    .product-name {
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+        letter-spacing: 1px;
+    }
+
+    .product-description {
+        font-size: 0.75rem;
+        margin-bottom: 0.6rem;
+        line-height: 1.5;
+        letter-spacing: 0.5px;
+    }
+
+    .product-price {
+        font-size: 1rem;
+        letter-spacing: 1px;
+    }
+
+    .add-to-cart-btn {
+        width: 32px;
+        height: 32px;
+        padding: 0.4rem;
+    }
+
+    .add-to-cart-btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* サイドバー */
+    .sidebar {
+        width: 240px;
+        left: -240px;
+        padding: 80px 0.75rem 1.5rem;
+    }
+    
+    .sidebar.active {
+        left: -20px;
+    }
+
+    .sidebar-content {
+        padding-top: 0;
+        gap: 0.85rem;
+    }
+
+    .category-btn {
+        padding: 0.75rem 0.8rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.3px;
+        color: rgba(255, 255, 255, 0.95);
+        font-weight: 400;
+        background: linear-gradient(135deg, rgba(45, 45, 45, 0.6) 0%, rgba(30, 30, 30, 0.7) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        white-space: nowrap;
+        overflow: visible;
+    }
+    
+    .category-btn.active {
+        color: #ffd700;
+        background: rgba(255, 215, 0, 0.2);
+        border-color: rgba(255, 215, 0, 0.7);
+        font-weight: 500;
+    }
+
+    /* カートパネル（スマホで下まで見えるように） */
+    .cart-panel {
+        width: 100%;
+        right: -100%;
+        height: 100dvh;
+        max-height: 100dvh;
+        overflow: hidden;
+        min-height: 0;
+    }
+    
+    .cart-items {
+        -webkit-overflow-scrolling: touch;
+        min-height: 0;
+        flex: 1 1 auto;
+        max-height: none !important;
+        padding: 0.75rem !important;
+    }
+    
+    .cart-footer {
+        padding: 1rem !important;
+        padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .cart-panel-header {
+        padding: 1rem !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .cart-panel-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .checkout-btn {
+        padding: 0.9rem !important;
+        font-size: 1rem !important;
+        margin-top: 0.75rem !important;
+    }
+
+    .checkout-item-soldout-badge {
+        top: 0.2rem !important;
+        right: 0.2rem !important;
+        font-size: 0.5rem !important;
+        padding: 0.15rem 0.35rem !important;
+        border-radius: 8px !important;
+    }
+
+    /* チェックアウト */
+    .checkout-content {
+        grid-template-columns: 1fr;
+    }
+
+    /* 商品詳細モーダル（スマホ）：画面固定・見切れない */
+    .product-modal-content {
+        padding: 0.75rem;
+        padding-top: 2.75rem;
+        padding-left: calc(0.75rem + env(safe-area-inset-left));
+        padding-right: calc(0.75rem + env(safe-area-inset-right));
+        padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+    }
+
+    .product-detail-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .product-detail-image {
+        max-height: 45vh;
+    }
+
+    .product-detail-image-thumbnails {
+        padding: 0.25rem 0 0.25rem 0;
+        max-height: 72px;
+        flex-shrink: 0;
+    }
+
+    .product-detail-name {
+        font-size: 1.2rem;
+    }
+
+    .product-detail-info {
+        gap: 1rem;
+    }
+
+    .product-detail-add-cart {
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* ========== サイトフッター（トップ・チェックアウト） ========== */
+.site-footer {
+    margin-top: 3rem;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    border-top: 1px solid rgba(255, 215, 0, 0.2);
+}
+.site-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem 1.5rem;
+    margin-bottom: 0.75rem;
+}
+.site-footer-links a {
+    color: rgba(255, 215, 0, 0.85);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+}
+.site-footer-links a:hover {
+    color: #ffd700;
+    text-decoration: underline;
+}
+.site-footer-copy {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+
+/* ========== 利用規約・プライバシー・特商法ページ ========== */
+.legal-page {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #0a0a0a 0%, #111 100%);
+    color: rgba(255, 255, 255, 0.9);
+    font-family: 'Noto Sans JP', sans-serif;
+}
+.legal-header {
+    padding: 2rem 1.5rem 1rem;
+    max-width: 720px;
+    margin: 0 auto;
+}
+.legal-back {
+    display: inline-block;
+    color: rgba(255, 215, 0, 0.9);
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+.legal-back:hover {
+    color: #ffd700;
+    text-decoration: underline;
+}
+.legal-title {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #ffd700;
+    margin: 0 0 0.25rem 0;
+    letter-spacing: 2px;
+}
+.legal-updated {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+}
+.legal-main {
+    padding: 0 1.5rem 3rem;
+    max-width: 720px;
+    margin: 0 auto;
+}
+.legal-content {
+    line-height: 1.9;
+    font-size: 0.95rem;
+}
+.legal-intro {
+    margin-bottom: 1.5rem;
+    color: rgba(255, 255, 255, 0.85);
+}
+.legal-content section {
+    margin-bottom: 2rem;
+}
+.legal-content h2 {
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: rgba(255, 215, 0, 0.95);
+    margin: 0 0 0.5rem 0;
+    padding-bottom: 0.25rem;
+}
+.legal-content p, .legal-content li {
+    margin: 0 0 0.5rem 0;
+    color: rgba(255, 255, 255, 0.8);
+}
+.legal-content ul {
+    margin: 0.5rem 0 1rem 1.25rem;
+    padding: 0;
+}
+.legal-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+.legal-table th, .legal-table td {
+    border: 1px solid rgba(255, 215, 0, 0.25);
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+}
+.legal-table th {
+    width: 32%;
+    background: rgba(255, 215, 0, 0.08);
+    color: rgba(255, 215, 0, 0.95);
+    font-weight: 500;
+}
+.legal-table td {
+    color: rgba(255, 255, 255, 0.85);
+}
+.legal-note {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 1rem;
+}
+.legal-closing {
+    margin-top: 2rem;
+    text-align: right;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+.legal-footer {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    border-top: 1px solid rgba(255, 215, 0, 0.2);
+    max-width: 720px;
+    margin: 0 auto;
+}
+.legal-footer a {
+    color: rgba(255, 215, 0, 0.85);
+    text-decoration: none;
+    margin: 0 0.75rem;
+    font-size: 0.9rem;
+}
+.legal-footer a:hover {
+    color: #ffd700;
+    text-decoration: underline;
+}
+.legal-copy {
+    margin: 0.75rem 0 0 0;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
