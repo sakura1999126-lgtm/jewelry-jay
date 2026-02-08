@@ -6,8 +6,8 @@ const { S3Client, GetObjectCommand, PutObjectCommand } = require('@aws-sdk/clien
 const PORT = parseInt(process.env.PORT || 3006, 10);
 
 // Coming Soonモードの設定
-// 環境変数 COMING_SOON=true で有効、またはポート3006の場合はデフォルトで有効
-const COMING_SOON = process.env.COMING_SOON === 'true' || (PORT === 3006 && process.env.COMING_SOON !== 'false');
+// 環境変数 COMING_SOON=false で無効化、それ以外は有効
+const COMING_SOON = process.env.COMING_SOON !== 'false';
 
 // ベースURLの設定（環境変数から取得、デフォルトはwest-tokyo-jewels.com）
 const BASE_URL = process.env.BASE_URL || 'https://west-tokyo-jewels.com';
