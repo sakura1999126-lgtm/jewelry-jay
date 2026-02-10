@@ -1437,6 +1437,14 @@ body.splash-complete .main-content {
     font-weight: 300;
     color: rgba(255, 255, 255, 0.6);
     letter-spacing: 1px;
+    line-height: 1.6;
+}
+
+.product-stock-note {
+    display: inline-block;
+    line-height: 1.8;
+    word-break: keep-all;
+    overflow-wrap: break-word;
 }
 
 .product-detail-actions {
@@ -1502,6 +1510,18 @@ body.splash-complete .main-content {
 
     .product-detail-sale-price {
         font-size: 1.25rem;
+    }
+    
+    .product-detail-stock {
+        font-size: 0.85rem;
+        line-height: 1.8;
+    }
+    
+    .product-stock-note {
+        font-size: 0.8rem;
+        line-height: 2;
+        display: block;
+        margin-top: 0.3rem;
     }
     
     .product-detail-size-section {

@@ -1400,10 +1400,10 @@ function updateProductStock(product, selectedSize = null) {
     } else {
         stockText = '売り切れ';
         stockColor = 'rgba(255, 68, 68, 0.9)'; // 赤色に変更
-        stockNote = '購入はできますが、商品到着までに２〜３週間お時間をいただきます';
+        stockNote = '購入はできますが、<br>商品到着までに２〜３週間お時間をいただきます';
     }
     
-    productDetailStock.innerHTML = stockText + (stockNote ? `<br><span style="font-size: 0.85rem; color: rgba(255, 68, 68, 0.8);">${stockNote}</span>` : '');
+    productDetailStock.innerHTML = stockText + (stockNote ? `<br><span class="product-stock-note" style="font-size: 0.85rem; color: rgba(255, 68, 68, 0.8);">${stockNote}</span>` : '');
     productDetailStock.style.color = stockColor;
     
     // 在庫が0でも購入可能にする
