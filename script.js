@@ -1400,7 +1400,7 @@ function updateProductStock(product, selectedSize = null) {
     } else {
         stockText = '売り切れ';
         stockColor = 'rgba(255, 68, 68, 0.9)'; // 赤色に変更
-        stockNote = '購入できますが発送までに2-3週間かかります';
+        stockNote = '購入はできますが、商品到着までに２〜３週間お時間をいただきます';
     }
     
     productDetailStock.innerHTML = stockText + (stockNote ? `<br><span style="font-size: 0.85rem; color: rgba(255, 68, 68, 0.8);">${stockNote}</span>` : '');
