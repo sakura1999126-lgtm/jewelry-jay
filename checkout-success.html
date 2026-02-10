@@ -42,6 +42,12 @@
             font-size: 2rem;
             color: #ffd700;
             margin-bottom: 1rem;
+            white-space: nowrap;
+        }
+        @media (max-width: 768px) {
+            .success-title {
+                font-size: 1.5rem;
+            }
         }
         .success-message {
             color: rgba(255, 255, 255, 0.8);
@@ -218,10 +224,6 @@
                                 <div style="margin-bottom: 1rem;">
                                     <strong style="color: #ffd700;">メールアドレス:</strong> ${customerEmail}
                                 </div>
-                                <div style="margin-bottom: 1rem;">
-                                    <strong style="color: #ffd700;">配送先:</strong><br>
-                                    <span style="white-space: pre-line;">${shippingAddress}</span>
-                                </div>
                                 <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
                                     <h4 style="color: #ffd700; margin-bottom: 0.8rem; font-size: 1rem;">ご注文商品</h4>
                                     ${itemsHtml || '<div style="color: rgba(255, 255, 255, 0.6);">商品情報を取得中...</div>'}
@@ -276,10 +278,6 @@
                                 </div>
                                 <div style="margin-bottom: 1rem;">
                                     <strong style="color: #ffd700;">メールアドレス:</strong> ${customerEmail}
-                                </div>
-                                <div style="margin-bottom: 1rem;">
-                                    <strong style="color: #ffd700;">配送先:</strong><br>
-                                    <span style="white-space: pre-line;">${shippingAddress}</span>
                                 </div>
                                 <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
                                     <h4 style="color: #ffd700; margin-bottom: 0.8rem; font-size: 1rem;">ご注文商品</h4>
