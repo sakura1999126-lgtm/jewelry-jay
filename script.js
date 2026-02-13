@@ -1325,7 +1325,7 @@ function renderSizeOptions(sizes) {
             const displayLabel = (inLabel && inLabel !== '—') ? inLabel : size.name;
             const hasOriginalPrice = size.originalPrice && size.originalPrice > size.price;
             const stock = size.stock || 0;
-            const stockHtml = stock > 0 ? `<span class="product-size-stock">在庫: ${stock}個</span>` : '<span class="product-size-stock product-size-stock-zero">在庫なし</span>';
+            const stockHtml = ''; // ネックレスとブレスレットの在庫表示を削除
             const priceHtml = size.price !== currentDetailProduct?.price || hasOriginalPrice
                 ? `<div class="product-size-price-wrapper">
                     ${hasOriginalPrice ? `<span class="product-size-original-price">¥${size.originalPrice.toLocaleString()}</span>` : ''}
