@@ -968,6 +968,14 @@ const server = http.createServer((req, res) => {
   let pathname = decodeURIComponent(u.pathname);
   const method = req.method;
 
+  // スパムボット・ブラウザ自動リクエストを静かに404で返す（ログを汚さない）
+  const ignorePaths = ['/apple-touch-icon', '/wlwmanifest.xml', '/wp-includes/', '/wp-login', '/wp-admin', '/xmlrpc.php', '/.env'];
+  if (ignorePaths.some(p => pathname.startsWith(p) || pathname.includes(p))) {
+    res.writeHead(404);
+    res.end();
+    return;
+  }
+
   // Coming Soonモード: APIエンドポイント以外はComing Soonページを表示
   if (COMING_SOON && !pathname.startsWith('/api/') && !pathname.startsWith('/public/') && !pathname.startsWith('/videos/') && !pathname.startsWith('/images/') && pathname !== '/coming-soon.html' && pathname !== '/sitemap.xml' && !pathname.endsWith('.css') && !pathname.endsWith('.js') && !pathname.endsWith('.json')) {
     const comingSoonPath = path.join(__dirname, 'coming-soon.html');
