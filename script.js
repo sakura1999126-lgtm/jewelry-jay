@@ -277,7 +277,8 @@ function setupEventListeners() {
     if (productDetailAddCart) {
         productDetailAddCart.addEventListener('click', () => {
             if (currentDetailProduct) {
-                // サイズが選択されている場合は、価格とサイズ情報を含めてカートに追加
+                const stock = currentSelectedSize ? currentSelectedSize.stock : currentDetailProduct.stock;
+                if (stock <= 0) return;
                 const productToAdd = currentSelectedSize 
                     ? { ...currentDetailProduct, price: currentSelectedSize.price, selectedSize: currentSelectedSize.name }
                     : currentDetailProduct;
@@ -1392,25 +1393,30 @@ function updateProductStock(product, selectedSize = null) {
     const stock = selectedSize ? selectedSize.stock : product.stock;
     let stockText = '';
     let stockColor = '';
-    let stockNote = '';
     
     if (stock > 0) {
         stockText = '在庫あり';
         stockColor = 'rgba(255, 255, 255, 0.8)';
     } else {
         stockText = '売り切れ';
-        stockColor = 'rgba(255, 68, 68, 0.9)'; // 赤色に変更
-        stockNote = '購入はできますが、<br>商品到着までに２〜３週間お時間をいただきます';
+        stockColor = 'rgba(255, 68, 68, 0.9)';
     }
     
-    productDetailStock.innerHTML = stockText + (stockNote ? `<br><span class="product-stock-note" style="font-size: 0.85rem; color: rgba(255, 68, 68, 0.8);">${stockNote}</span>` : '');
+    productDetailStock.innerHTML = stockText;
     productDetailStock.style.color = stockColor;
     
-    // 在庫が0でも購入可能にする
     if (productDetailAddCart) {
-        productDetailAddCart.disabled = false;
-        productDetailAddCart.style.opacity = '1';
-        productDetailAddCart.style.cursor = 'pointer';
+        if (stock <= 0) {
+            productDetailAddCart.disabled = true;
+            productDetailAddCart.style.opacity = '0.4';
+            productDetailAddCart.style.cursor = 'not-allowed';
+            productDetailAddCart.textContent = '売り切れ';
+        } else {
+            productDetailAddCart.disabled = false;
+            productDetailAddCart.style.opacity = '1';
+            productDetailAddCart.style.cursor = 'pointer';
+            productDetailAddCart.textContent = 'カートに追加';
+        }
     }
 }
 

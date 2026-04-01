@@ -31,7 +31,7 @@
                         <h2 style="margin-bottom: 0.75rem;">ご注文内容とお支払い</h2>
                         <div id="outOfStockWarning" style="display: none; background: rgba(255, 68, 68, 0.1); border: 1px solid rgba(255, 68, 68, 0.3); border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem;">
                             <p style="color: rgba(255, 68, 68, 0.9); margin: 0; font-size: 0.85rem; line-height: 1.4;">
-                                ⚠️ 売り切れ商品あり（発送まで2-3週間）
+                                ⚠️ 売り切れ商品が含まれているため、お会計に進めません。カートから売り切れ商品を削除してください。
                             </p>
                         </div>
                     </div>
@@ -178,10 +178,17 @@
                         checkoutItems.appendChild(itemElement);
                     });
 
-                    // 売り切れ警告を表示
+                    // 売り切れ警告を表示＆決済ボタンを無効化
                     const outOfStockWarning = document.getElementById('outOfStockWarning');
                     if (outOfStockWarning) {
                         outOfStockWarning.style.display = hasOutOfStockItems ? 'block' : 'none';
+                    }
+                    const checkoutBtn = document.getElementById('stripeCheckoutBtn');
+                    if (checkoutBtn && hasOutOfStockItems) {
+                        checkoutBtn.disabled = true;
+                        checkoutBtn.style.opacity = '0.4';
+                        checkoutBtn.style.cursor = 'not-allowed';
+                        checkoutBtn.textContent = '売り切れ商品を削除してください';
                     }
 
                     // Calculate and display total

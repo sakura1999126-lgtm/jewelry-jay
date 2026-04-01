@@ -396,6 +396,45 @@ function createCheckoutSession(req, res) {
         return;
       }
 
+      // 在庫チェック: 在庫0の商品が含まれていたら決済を拒否
+      if (cartItems && Array.isArray(cartItems) && cartItems.length > 0) {
+        let productsData;
+        if (r2Client) {
+          const r2Data = await loadProductsFromR2();
+          if (r2Data) productsData = r2Data;
+        }
+        if (!productsData) {
+          try {
+            const fileContent = fs.readFileSync(path.join(__dirname, 'products.json'), 'utf8');
+            productsData = JSON.parse(fileContent);
+          } catch (_) {}
+        }
+        if (productsData) {
+          const products = Array.isArray(productsData) ? productsData : (productsData.products || []);
+          const outOfStockItems = [];
+          for (const cartItem of cartItems) {
+            const product = products.find(p => p.id === cartItem.productId);
+            if (!product) continue;
+            let stock = product.stock || 0;
+            if (cartItem.sizeName && product.sizes) {
+              const size = product.sizes.find(s => s.name === cartItem.sizeName);
+              if (size) stock = size.stock || 0;
+            }
+            if (stock <= 0) {
+              outOfStockItems.push(product.name + (cartItem.sizeName ? ` (${cartItem.sizeName})` : ''));
+            }
+          }
+          if (outOfStockItems.length > 0) {
+            res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            res.end(JSON.stringify({
+              error: `売り切れの商品が含まれています: ${outOfStockItems.join(', ')}`,
+              outOfStockItems
+            }), 'utf-8');
+            return;
+          }
+        }
+      }
+
       // Stripe Checkout Sessionを作成
       // successUrlとcancelUrlが相対パスの場合はBASE_URLを付与
       const finalSuccessUrl = successUrl.startsWith('http') ? successUrl : `${BASE_URL}${successUrl.startsWith('/') ? '' : '/'}${successUrl}`;
@@ -973,6 +1012,15 @@ const server = http.createServer((req, res) => {
     } else if (pathname === '/api/reset-stock' && method === 'POST') {
       // 在庫リセット用API（管理用）
       resetStockFromTemplate(req, res);
+    } else if (pathname === '/api/r2-status' && method === 'GET') {
+      // R2設定状態の確認用（本番で「R2が見れない」時の確認に使用）
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+      res.end(JSON.stringify({
+        r2Configured: !!r2Client,
+        message: r2Client
+          ? 'R2 is configured. Products are loaded from R2.'
+          : 'R2 is NOT configured. Set R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY in Render Environment.',
+      }), 'utf-8');
     } else {
       res.writeHead(404, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'API endpoint not found' }), 'utf-8');

@@ -5,6 +5,9 @@ services:
     buildCommand: ""
     startCommand: node server.js
     plan: free
+    # 本番でR2・在庫を利用する場合は Render Dashboard → Environment で以下を設定すること
+    # R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY （必須）
+    # R2_BUCKET, R2_ACCOUNT_ID （任意・省略時はコード内のデフォルト）
     envVars:
       - key: NODE_ENV
         value: production

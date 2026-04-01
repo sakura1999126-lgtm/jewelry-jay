@@ -105,6 +105,17 @@ R2 client initialized successfully
 
 ## トラブルシューティング
 
+### RenderでデプロイしてもR2が見れない・在庫が反映されない
+- **原因**: Renderの「Environment」にR2の環境変数が入っていないためです。Gitに`.env`や`products.json`は含まれないので、**デプロイだけではR2には接続されません。**
+- **対処**:
+  1. Renderダッシュボード → 該当サービス（jewelry-jay）→ 左メニュー **「Environment」**
+  2. **「Add Environment Variable」** で以下を追加（値はCloudflareで取得したもの）:
+     - `R2_ACCESS_KEY_ID` = Access Key ID
+     - `R2_SECRET_ACCESS_KEY` = Secret Access Key
+  3. **「Save Changes」** をクリック（自動で再デプロイされます）
+  4. 再デプロイ後、ログに `R2 client initialized successfully` と `products.jsonをR2から復元しました` が出ているか確認
+- **確認用URL**: 本番の `https://あなたのドメイン/api/r2-status` にアクセスし、`r2Configured: true` になっていればR2は有効です。
+
 ### エラー: "R2 not configured"
 - 環境変数が正しく設定されているか確認
 - 環境変数の名前が正確か確認（大文字小文字に注意）
